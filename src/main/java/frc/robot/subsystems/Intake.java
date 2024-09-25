@@ -13,20 +13,28 @@ import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final CANSparkMax motor;
+  private final CANSparkMax m_motor;
 
   public Intake(int id) {
-    this.motor = new CANSparkMax(id, MotorType.kBrushless);
-    this.motor.setIdleMode(IdleMode.kCoast);
+    this.m_motor = new CANSparkMax(id, MotorType.kBrushless);
+    this.m_motor.setIdleMode(IdleMode.kCoast);
   }
 
-  public void im() {
-    this.motor.set(Constants.Intake.kInSpeed);
+  public void setIn() {
+    this.m_motor.set(Constants.Intake.kInSpeed);
+
+  }
+  public void setOut() {
+    this.m_motor.set(Constants.Intake.kOutSpeed);
+
+  }
+  public void setAvoid() {
+    this.m_motor.set(Constants.Intake.kAvoidSpeed);
 
   }
 
-  public void stop() {
-    this.motor.stopMotor();
+  public void setStop() {
+    this.m_motor.stopMotor();
   }
 
   @Override

@@ -10,7 +10,14 @@ public final class Constants {
 
   public static class Intake {
     public static final double kInSpeed = -0.5d;
+    public static final double kOutSpeed = 0.5d;
+    public static final double kAvoidSpeed = 0.05d;
+
+    public static final int kMotorId = 5;
+    
   }
+
+  
 
   public static final class Indexer {
     public static final int kIndexerEncoderPort = 0;
