@@ -7,7 +7,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
@@ -20,7 +19,7 @@ import lib.BlueShift.odometry.vision.OdometryCamera;
 import lib.BlueShift.odometry.vision.VisionOdometryPoseEstimate;
 import lib.BlueShift.odometry.vision.camera.LimelightOdometryCamera;
 
-public class FilteredSwerveDrivePoseEstimator extends SubsystemBase implements EstimatedPositionProvider {
+public class FusedSwerveDrivePoseEstimator extends SubsystemBase implements EstimatedPositionProvider {
   private final Supplier<SwerveModulePosition[]> modulePositionsSupplier;
   private final Supplier<Rotation2d> headingSupplier;
   private boolean visionEnabled;
@@ -30,7 +29,7 @@ public class FilteredSwerveDrivePoseEstimator extends SubsystemBase implements E
 
   private final Field2d field = new Field2d();
 
-  public FilteredSwerveDrivePoseEstimator(
+  public FusedSwerveDrivePoseEstimator(
     SwerveDriveKinematics kinematics,
     Supplier<SwerveModulePosition[]> modulePositionsSupplier,
     Supplier<Rotation2d> headingSupplier,
