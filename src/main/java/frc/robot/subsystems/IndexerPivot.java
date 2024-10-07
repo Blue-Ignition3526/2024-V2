@@ -4,6 +4,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,6 +28,11 @@ public class IndexerPivot extends SubsystemBase {
   // Control
   private Measure<Angle> m_setpoint = Degrees.of(0);
 
+  // Mechanism
+  private Mechanism2d m_pivotMechanism;
+  private MechanismRoot2d m_pivotRoot;
+  private MechanismLigament2d m_pivotLigament;
+
   public IndexerPivot() {
     // Encoder
     this.indexerEncoder = new DutyCycleEncoder(Constants.Indexer.Pivot.kIndexerPivotEncoderPort);
@@ -37,6 +45,11 @@ public class IndexerPivot extends SubsystemBase {
 
     // Control
     SmartDashboard.putData("Indexer/Pivot/PIDController", Constants.Indexer.Pivot.kIndexerPivotPIDController);
+
+    // Mechanism
+    this.m_pivotMechanism = new Mechanism2d(3, 3);
+    this.m_pivotRoot = m_pivotMechanism.getRoot("Root", 1, 2);
+    this.m_pivotLigament = new MechanismLigament2d("Pivot", 1, 0);
   }
 
   // TODO: Implement emergency home and use motor encoder if absolute encoder fails
@@ -50,10 +63,12 @@ public class IndexerPivot extends SubsystemBase {
 
   /**
    * Get the angle reported by the Absolute through-bore encoder (in rotation)
+   * RANGE: -180 to 180 degrees
    * @return the angle of the indexer pivot
    */
   public Measure<Angle> getAngle() {
-    return Rotation.of(indexerEncoder.get());
+    // TODO: Add offset
+    return Rotation.of(indexerEncoder.getAbsolutePosition()).minus(Degrees.of(180));
   }
 
   /**
@@ -62,6 +77,22 @@ public class IndexerPivot extends SubsystemBase {
    */
   public void setSetpointAngle(Measure<Angle> setpoint) {
     m_setpoint = setpoint;
+  }
+
+  /**
+   * Get the setpoint angle for the indexer pivot
+   * @return the setpoint angle
+   */
+  public double getSetpointError() {
+    return getAngle().in(Degrees) - m_setpoint.in(Degrees);
+  }
+
+  /**
+   * Check if the indexer pivot is at the setpoint
+   * @return true if the indexer pivot is at the setpoint
+   */
+  public boolean atSetpoint() {
+    return Math.abs(getSetpointError()) < Constants.Indexer.Pivot.kIndexerPivotTolerance.in(Degrees);
   }
 
   @Override
@@ -75,11 +106,13 @@ public class IndexerPivot extends SubsystemBase {
     
     // Calculate set voltage
     double setVoltage = 0;
-    if (Math.abs(currentAngle - setpointAngle) > Constants.Indexer.Pivot.kIndexerPivotTolerance.in(Degrees)) {
+    if (!atSetpoint()) {
       SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", false);
       // TODO: If the setpoint is not reached, apply Feedforward
+      double pid = Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle);
+      // double ff = Constants.Indexer.Pivot.kIndexerPivotFeedforward.calculate(pid);
       setVoltage = MathUtil.clamp(
-        Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle),
+        pid,
         Constants.Indexer.Pivot.kIndexerPivotMotorMinVoltage,
         Constants.Indexer.Pivot.kIndexerPivotMotorMaxVoltage
       );
@@ -91,10 +124,15 @@ public class IndexerPivot extends SubsystemBase {
 
     // Update motor voltage
     m_pivotMotor.setVoltage(setVoltage);
+
+    // Update Mechanism2d
+    m_pivotLigament.setAngle(currentAngle);
     
     // Update SmartDashboard
     SmartDashboard.putNumber("Indexer/Pivot/CurrentAngle", currentAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointAngle", setpointAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetVoltage", setVoltage);
+    SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError());
+    SmartDashboard.putData("Indexer/Pivot/Mechanism", m_pivotMechanism);
   }
 }

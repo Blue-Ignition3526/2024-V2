@@ -40,27 +40,27 @@ public class PhotonOdometryCamera implements OdometryCamera {
     }
 
     @Override
-    public void disable() {
+    public synchronized void disable() {
         m_enabled = false;
     }
 
     @Override
-    public void enable() {
+    public synchronized void enable() {
         m_enabled = true;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public synchronized void setEnabled(boolean enabled) {
         m_enabled = enabled;
     }
 
     @Override
-    public boolean isEnabled() {
+    public synchronized boolean isEnabled() {
         return m_enabled;
     }
 
     @Override
-    public double getLastTimestamp() {
+    public synchronized double getLastTimestamp() {
         return lastTimestamp;
     }
 

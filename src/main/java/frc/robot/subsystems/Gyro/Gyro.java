@@ -1,14 +1,14 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.Gyro;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Gyro extends SubsystemBase implements GyroIO {
-  GyroIO io;
+  private GyroIO io;
+  private double vx, vy, vz = 0d;
+  private double lastTime = Timer.getFPGATimestamp();
 
   /**
    * Creates a new Gyro. 
@@ -107,5 +107,46 @@ public class Gyro extends SubsystemBase implements GyroIO {
     io.setYaw(yawDeg);
   }
 
-  public void periodic() {}
+  /**
+   * Gets the velocity of the gyro in the X direction. (ROBOT RELATIVE)
+   * @return
+   */
+  public double getVelocityX() {
+    return vx;
+  }
+  
+  /**
+   * Gets the velocity of the gyro in the Y direction. (ROBOT RELATIVE)
+   * @return
+   */
+  public double getVelocityY() {
+    return vy;
+  }
+
+  /**
+   * Gets the velocity of the gyro in the Z direction. (ROBOT RELATIVE)
+   * @return
+   */
+  public double getVelocityZ() {
+    return vz;
+  }
+
+  /**
+   * Gets the velocity of the gyro in the X and Y directions. (ROBOT RELATIVE)
+   * @return
+   */
+  public Translation2d getPlanarVelocity() {
+    return new Translation2d(vx, vy);
+  }
+
+  public void periodic() {
+    // Calculate velocity
+    double currentTime = Timer.getFPGATimestamp();
+    double dt = currentTime - lastTime;
+    lastTime = currentTime;
+
+    vx += io.getAccelerationX() * dt;
+    vy += io.getAccelerationY() * dt;
+    vz += io.getAccelerationZ() * dt;
+  }
 }

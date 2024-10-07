@@ -28,7 +28,7 @@ public class LimelightOdometryCamera implements OdometryCamera {
         this.m_stdDevProvider = stdDevProvider;
     }
 
-    public void setHeading(double degrees) {
+    public synchronized void setHeading(double degrees) {
         LimelightHelpers.SetRobotOrientation(m_cameraName, degrees, 0, 0, 0, 0, 0);
     }
 
@@ -38,17 +38,17 @@ public class LimelightOdometryCamera implements OdometryCamera {
     }
 
     @Override
-    public void disable() {
+    public synchronized void disable() {
         m_enabled = false;
     }
 
     @Override
-    public void enable() {
+    public synchronized void enable() {
         m_enabled = true;
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public synchronized void setEnabled(boolean enabled) {
         m_enabled = enabled;
     }
 
@@ -70,12 +70,12 @@ public class LimelightOdometryCamera implements OdometryCamera {
     }
 
     @Override
-    public double getLastTimestamp() {
+    public synchronized double getLastTimestamp() {
         return lastLatency;
     }
 
     @Override
-    public boolean isEnabled() {
+    public synchronized boolean isEnabled() {
         return m_enabled;
     }
 }

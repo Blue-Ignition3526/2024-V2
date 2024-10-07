@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,10 +48,10 @@ public final class Constants {
     public static final class Pivot {
       // * Encoder
       // TODO: Check angles
-      public static final int kIndexerPivotEncoderPort = 0;
+      public static final int kIndexerPivotEncoderPort = 1;
       public static final Measure<Angle> kIndexerPivotEncoderOffset = Degrees.of(0);
-      public static final Measure<Angle> kIndexerPivotMinAngle = Degrees.of(0);
-      public static final Measure<Angle> kIndexerPivotMaxAngle = Degrees.of(0);
+      // public static final Measure<Angle> kIndexerPivotMinAngle = Degrees.of(0);
+      // public static final Measure<Angle> kIndexerPivotMaxAngle = Degrees.of(0);
   
       // * Motor
       // TODO: Set motor ID
@@ -61,9 +62,9 @@ public final class Constants {
   
       // * Control
       // TODO: Check values
-      public static final TrapezoidProfile.Constraints kIndexerPivotConstraints = new TrapezoidProfile.Constraints(0.5, 1);
-      public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.1, 0, 0, kIndexerPivotConstraints);
-      public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(0.5);
+      public static final TrapezoidProfile.Constraints kIndexerPivotConstraints = new TrapezoidProfile.Constraints(500, 500);
+      public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.15, 0, 0, kIndexerPivotConstraints);
+      public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
   }
 

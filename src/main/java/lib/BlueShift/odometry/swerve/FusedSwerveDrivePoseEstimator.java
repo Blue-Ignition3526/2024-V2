@@ -54,15 +54,15 @@ public class FusedSwerveDrivePoseEstimator extends SubsystemBase implements Esti
     );
   }
 
-  public void setVisionEnabled(boolean enabled) {
+  public synchronized void setVisionEnabled(boolean enabled) {
     visionEnabled = enabled;
   }
 
-  public void enableVision() {
+  public synchronized void enableVision() {
     visionEnabled = true;
   }
 
-  public void disableVision() {
+  public synchronized void disableVision() {
     visionEnabled = false;
   }
 
