@@ -44,6 +44,11 @@ public final class Constants {
     public static final int kBeamBreakPort = 0;
   }
 
+    // shooter
+    public static final class ShooterSubsystem {
+    public static final int kUpperRollerID = 1; // Cambia según tu configuración
+    public static final int kLowerRollerID = 2; // Cambia según tu configuración
+  }
   public static final class Indexer {
     public static final class Pivot {
       // * Encoder
