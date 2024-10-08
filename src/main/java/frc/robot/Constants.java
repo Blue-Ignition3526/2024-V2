@@ -188,4 +188,17 @@ public final class Constants {
                 .setName("Back Right");
         }
     }
+      // * CLIMBER
+      public static final class Climber {
+        // Climber motor config
+        public static final int kLeftClimberMotorID = 33;
+        public static final int kRightClimberMotorID = 32;
+
+        // Climber speed
+        public static final double kClimberUpSpeed = 0.9;
+        public static final double kClimberDownSpeed = -0.75;
+
+        // Max current (Used for reseting the climber)
+        public static final double kMaxCurrent = 20;
+    }
 }
