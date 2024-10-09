@@ -40,6 +40,6 @@ public class Climber extends SubsystemBase {
     // TODO: Get the height of the climbers
     // TODO: Add enums for climber positions
     public Measure<Distance> getPosition() {
-        
+        return null;
     }
 }
