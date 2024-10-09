@@ -1,11 +1,16 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.CANSparkBase.IdleMode;
 import lib.BlueShift.control.motor.LazyCANSparkMax;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -13,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
     CANSparkFlex upperRoller;
     CANSparkFlex lowerRoller;
 
-    boolean state;
+    Measure<Velocity<Angle>> velocitySetpoint = RPM.of(0.);
 
 public ShooterSubsystem() {
     this.upperRoller = new CANSparkFlex(Constants.ShooterSubsystem.kUpperRollerID, MotorType.kBrushless);
