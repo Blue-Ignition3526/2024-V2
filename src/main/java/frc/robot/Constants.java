@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,9 +38,6 @@ public final class Constants {
     // TODO: Set motor ID
     public static final int kMotorId = 5;
     public static final int kMotorMaxCurrent = 10;
-
-    // * Beam Break
-    public static final int kBeamBreakPort = 0;
   }
 
   public static final class Indexer {
@@ -66,6 +62,12 @@ public final class Constants {
       public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.15, 0, 0, kIndexerPivotConstraints);
       public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
+  }
+
+  public static final class BreamBreaks {
+    public static final int kIntakeBeamBreakPort = 1;
+    public static final int kIndexerStage1BeamBreakPort = 2;
+    public static final int kIndexerStage2BeamBreakPort = 3;
   }
 
   public static final class Vision {
@@ -119,7 +121,7 @@ public final class Constants {
         // * Physical model of the robot
         public static final class PhysicalModel {
             // * MAX DISPLACEMENT SPEED (and acceleration)
-            public static Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(4.3);
+            public static Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(4);
             public static final Measure<Velocity<Velocity<Distance>>> kMaxAcceleration = MetersPerSecondPerSecond.of(3);
 
             // * MAX ROTATIONAL SPEED (and acceleration)
@@ -130,24 +132,20 @@ public final class Constants {
             public static final Measure<Distance> kWheelDiameter = Inches.of(4);
 
             // * Gear ratios
-            public static final double kDriveMotorGearRatio = 1.0 / 6.12; // 6.12:1 Drive
-            public static final double kTurningMotorGearRatio = 1.0 / 12.8; // 12.8:1 Steering
+            public static final double kDriveMotorGearRatio = 1.0 / 6.75;
+            public static final double kTurningMotorGearRatio = 1.0 / (150 / 7);
 
-            // * Conversion factors (Drive Motor)
+            // * Conversion factors (Drive Motor) DO NOT CHANGE
             public static final double kDriveEncoder_RotationToMeter = kDriveMotorGearRatio * (kWheelDiameter.in(Meters) / 2) * 2 * Math.PI;
             public static final double kDriveEncoder_RPMToMeterPerSecond = kDriveEncoder_RotationToMeter / 60.0;
 
-            // * Conversion factors (Turning Motor)
+            // * Conversion factors (Turning Motor) DO NOT CHANGE
             public static final double kTurningEncoder_RotationToRadian = kTurningMotorGearRatio * 2.0 * Math.PI;
             public static final double kTurningEncoder_RPMToRadianPerSecond = kTurningEncoder_RotationToRadian / 60.0;
 
             // * Robot Without bumpers measures
-            public static final Measure<Distance> kTrackWidth = Inches.of(23.08);
-            public static final Measure<Distance> kWheelBase = Inches.of(22.64);
-
-            // * Robot with bumpers
-            public static final Measure<Distance> kWidthWithBumpers = Meters.of(0.56);
-            public static final Measure<Distance> kLengthWithBumpers = Meters.of(0.56);
+            public static final Measure<Distance> kTrackWidth = Inches.of(26);
+            public static final Measure<Distance> kWheelBase = Inches.of(30.5);
     
             // * Create a kinematics instance with the positions of the swerve modules
             public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(SwerveChassis.sizeToModulePositions(kTrackWidth.in(Meters), kWheelBase.in(Meters)));

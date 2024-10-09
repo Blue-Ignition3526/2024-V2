@@ -41,9 +41,8 @@ public class AlignIndexerPivotToSpeaker extends Command {
     // TODO: Calculate indexer height
     double h_i = 0;
     double h_f = Constants.Field.kBlueSpeakerPoseMeters.getZ();
-    double g = 9.80665;
+    double g = 9.81;
     
-
   }
 
   // Called once the command ends or is interrupted.

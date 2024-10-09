@@ -13,17 +13,11 @@ public class Intake extends SubsystemBase {
   // Motor
   private final LazyCANSparkMax m_motor;
 
-  // Beam Break Sensor
-  private final DigitalInput m_beamBreak;
-
   public Intake() {
     // Motor
     this.m_motor = new LazyCANSparkMax(Constants.Intake.kMotorId, MotorType.kBrushless);
     this.m_motor.setIdleMode(IdleMode.kCoast);
     this.m_motor.setSmartCurrentLimit(Constants.Intake.kMotorMaxCurrent);
-
-    // Beam Break
-    this.m_beamBreak = new DigitalInput(Constants.Intake.kBeamBreakPort);
   }
 
   /**
@@ -58,16 +52,6 @@ public class Intake extends SubsystemBase {
     this.m_motor.stopMotor();
   }
 
-  /**
-   * Get the state of the beam break sensor
-   * @return true if the beam break sensor is broken
-   */
-  public boolean getBeamBreak() {
-    return !m_beamBreak.get();
-  }
-
   @Override
-  public void periodic() {
-    SmartDashboard.putBoolean("Intake/BeamBreak", getBeamBreak());
-  }
+  public void periodic() {}
 }
