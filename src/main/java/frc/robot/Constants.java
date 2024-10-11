@@ -48,7 +48,13 @@ public final class Constants {
     public static final class ShooterSubsystem {
     public static final int kUpperRollerID = 1; // Cambia según tu configuración
     public static final int kLowerRollerID = 2; // Cambia según tu configuración
+    public static final int UpperSmartCurrentLimit = 20; // voltage limit of upper roller
+    public static final double UpperClosedLoopRampRate  = 0.15; // velocity from 0 to 100 upprt roller
+    public static final int LowerSmartCurrentLimit = 20; //voltage limit from lower roller
+    public static final double lowerClosedLoopRampRate = 0.15; // velocity from 0 to 100 lower roller
   }
+
+  // indexer
   public static final class Indexer {
     public static final class Pivot {
       // * Encoder

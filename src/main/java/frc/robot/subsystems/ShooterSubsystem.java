@@ -31,18 +31,18 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem() {
         this.upperRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kUpperRollerID, MotorType.kBrushless);
         this.upperRoller.setIdleMode(IdleMode.kCoast);
-        // TODO: Move to constants
-        this.upperRoller.setSmartCurrentLimit(20);
-        this.upperRoller.setClosedLoopRampRate(0.15);
+       
+        this.upperRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.UpperSmartCurrentLimit);
+        this.upperRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.UpperClosedLoopRampRate);
         this.upperRoller.setInverted(true);
 
         this.upperRollerPID = new LazySparkPID(this.upperRoller);
 
         this.lowerRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kLowerRollerID, MotorType.kBrushless);
         this.lowerRoller.setIdleMode(IdleMode.kCoast);
-        // TODO: Move to constants
-        this.lowerRoller.setSmartCurrentLimit(20);
-        this.lowerRoller.setClosedLoopRampRate(0.15);
+        
+        this.lowerRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.LowerSmartCurrentLimit);
+        this.lowerRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.lowerClosedLoopRampRate);
 
         this.lowerRollerPID = new LazySparkPID(this.lowerRoller);
     }
