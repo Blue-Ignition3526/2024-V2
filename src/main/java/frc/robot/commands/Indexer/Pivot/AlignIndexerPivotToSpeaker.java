@@ -6,12 +6,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IndexerPivot;
 
 public class AlignIndexerPivotToSpeaker extends Command {
   IndexerPivot indexerPivot;
-  Elevator elevator;
+  ElevatorSubsystem elevator;
   Supplier<Pose2d> poseSupplier;
 
   /**
@@ -19,7 +19,7 @@ public class AlignIndexerPivotToSpeaker extends Command {
    * @param indexerPivot
    * @param elevator
    */
-  public AlignIndexerPivotToSpeaker(IndexerPivot indexerPivot, Elevator elevator, Supplier<Pose2d> poseSupplier) {
+  public AlignIndexerPivotToSpeaker(IndexerPivot indexerPivot, ElevatorSubsystem elevator, Supplier<Pose2d> poseSupplier) {
     this.indexerPivot = indexerPivot;
     this.elevator = elevator;
     this.poseSupplier = poseSupplier;

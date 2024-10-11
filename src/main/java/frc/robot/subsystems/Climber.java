@@ -6,12 +6,17 @@ import frc.robot.Constants;
 import com.revrobotics.CANSparkMax;
 
 public class Climber extends SubsystemBase {
-    CANSparkMax climberMotor;
     String name;
 
-    public Climber(int motorID, String name) {
+    private final CANSparkMax climberMotor;
+    private final ElevatorSubsystem elevator;
+    private final IndexerPivot pivot;
+
+    public Climber(int motorID, String name,ElevatorSubsystem elevator, IndexerPivot pivot) {
         this.name = name;
         this.climberMotor = new CANSparkMax(motorID, MotorType.kBrushless);
+        this.elevator = elevator;
+        this.pivot = pivot;
     }
 
     public void set(double speed) {
@@ -19,7 +24,9 @@ public class Climber extends SubsystemBase {
     }
 
     public void setClimberUp() {
+    if (elevator.isAtHighHeight() && pivot.isPivotAtShooterAngle()) {
         climberMotor.set(Constants.Climber.kClimberUpSpeed);
+    }
     }
 
     public void setClimberDown() {

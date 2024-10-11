@@ -95,6 +95,10 @@ public class IndexerPivot extends SubsystemBase {
     return Math.abs(getSetpointError()) < Constants.Indexer.Pivot.kIndexerPivotTolerance.in(Degrees);
   }
 
+  public boolean isPivotAtShooterAngle() {
+    return atSetpoint();  // Asumiendo que el setpoint es el ángulo deseado para disparar
+}
+
   @Override
   public void periodic() {
     // TODO: BE VERY CAREFUL AND TEST MANUALLY FIRST
