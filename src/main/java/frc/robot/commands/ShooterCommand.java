@@ -42,8 +42,11 @@ public class ShooterCommand extends Command {
     public boolean isFinished() {
         return false; // Continúa hasta que se interrumpa
     }
+    //TODO: mover calculates
+    //TODO: cambiar nombres
+    //TODO: calculos con la tabla
     private double calculateUpperSpeed(double distance) {
-        // Ajusta esta lógica según las necesidades de tu robot
+        // Ajusta esta lógica según las necesidades 
         if (distance < 1.0) return 0.5;
         else if (distance < 2.0) return 0.7;
         else return 1.0; // depende de cambios
@@ -51,7 +54,7 @@ public class ShooterCommand extends Command {
 
 
     private double calculateLowerSpeed(double distance) {
-        // Ajusta esta lógica según las necesidades de tu robot
-        return calculateUpperSpeed(distance); // Ejemplo simple
+        // Ajusta esta lógica según las necesidades 
+        return calculateUpperSpeed(distance); // Ejemplo
     }
 }

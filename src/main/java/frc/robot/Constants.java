@@ -45,6 +45,7 @@ public final class Constants {
   }
 
     // shooter
+    // TODO: subir limit
     public static final class ShooterSubsystem {
     public static final int kUpperRollerID = 1; // Cambia según tu configuración
     public static final int kLowerRollerID = 2; // Cambia según tu configuración
