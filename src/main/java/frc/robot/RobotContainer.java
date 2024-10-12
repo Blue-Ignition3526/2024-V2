@@ -1,9 +1,18 @@
 package frc.robot;
 
+import frc.robot.commands.Indexer.IndexerFullIn;
+import frc.robot.commands.Indexer.IndexerFullOut;
+import frc.robot.commands.Indexer.IndexerOutPass;
+import frc.robot.commands.Indexer.IndexerOutReceive;
+import frc.robot.commands.Indexer.IndexerInReceive;
+
+import frc.robot.commands.Indexer.IndexerRetain;
 import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
 import frc.robot.commands.Intake.IntakeIn;
+import frc.robot.commands.Intake.IntakeOut;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.IndexerPivot;
+import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
@@ -15,12 +24,13 @@ import lib.BlueShift.control.CustomController.CustomControllerType;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
   // * Controller
-  private final CustomController m_controller = new CustomController(0, CustomControllerType.XBOX);
+  private final CommandXboxController controller = new CommandXboxController(0);
   
   // // * Gyro
   // private final Gyro m_gyro;
@@ -39,6 +49,9 @@ public class RobotContainer {
 
   // * Indexer Pivot
   private final IndexerPivot m_indexerPivot;
+
+  // * 
+  private final IndexerRollers m_indexerRollers;
 
   public RobotContainer() {
     // // Gyro
@@ -59,6 +72,9 @@ public class RobotContainer {
     // Indexer Pivot
     this.m_indexerPivot = new IndexerPivot();
 
+    //Indexer Rollers
+    this.m_indexerRollers = new IndexerRollers();
+
     configureBindings();
   }
 
@@ -74,6 +90,17 @@ public class RobotContainer {
     // );
 
     this.m_intake.setDefaultCommand(new IntakeIn(m_intake));
+    
+    //IndexerRollers
+    controller.leftBumper().whileTrue(new IndexerFullOut());
+    controller.rightBumper().whileTrue(new IndexerFullIn());
+
+    controller.rightTrigger().whileTrue(new IndexerInReceive());
+    controller.rightTrigger().whileTrue(new IndexerOutPass());
+    controller.rightTrigger().whileTrue(new IndexerOutReceive());
+
+    controller.leftTrigger().whileTrue(new IndexerRetain());
+
   }
 
   public Command getAutonomousCommand() {

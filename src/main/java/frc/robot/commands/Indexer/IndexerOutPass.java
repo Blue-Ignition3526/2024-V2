@@ -19,7 +19,7 @@ public class IndexerOutPass extends Command { //comando para que pase al shooter
 
   @Override
   public void execute() { //siempre
-    rollers.setRollersOutReceivingSpeed(); // pone los rollers a la velocidad que estableciste previamente para cuando los rollers agarran
+    rollers.setRollersOutReceivingSpeed(); //pone los rollers a la velocidad que estableciste previamente para cuando los rollers agarran
   }
 
   @Override
@@ -29,6 +29,6 @@ public class IndexerOutPass extends Command { //comando para que pase al shooter
 
   @Override
   public boolean isFinished() { //cuando el comando acabe
-    return false;// regresa que si los rollers tienen pieza o no
+    return false;// regresa false
   }
 }
