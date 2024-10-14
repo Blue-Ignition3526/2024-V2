@@ -25,6 +25,7 @@ import edu.wpi.first.units.Velocity;
 import lib.BlueShift.constants.CTRECANDevice;
 import lib.BlueShift.constants.PIDFConstants;
 import lib.BlueShift.constants.SwerveModuleOptions;
+import lib.BlueShift.math.InterpolatingTable;
 import lib.BlueShift.utils.SwerveChassis;
 
 public final class Constants {
@@ -44,10 +45,25 @@ public final class Constants {
     public static final int kBeamBreakPort = 0;
   }
 
-    // shooter
-    public static final class ShooterSubsystem {
-    public static final int kUpperRollerID = 1; // Cambia según tu configuración
-    public static final int kLowerRollerID = 2; // Cambia según tu configuración
+  // * Shooter
+  // TODO: Check speeds
+  // TODO: Check angles
+  // TODO: Set motor IDs
+  public static final class ShooterSubsystem {
+    public static final int kUpperRollerID = 1;
+    public static final int kLowerRollerID = 2;
+
+    public static final InterpolatingTable kShooterSpeed = new InterpolatingTable(new double[][] {
+      // <distance (meters)>, <speed (RPM)>
+      {0, 80},
+      {2, 160},
+    });
+
+    public static final InterpolatingTable kIndexerAngle = new InterpolatingTable(new double[][] {
+      // <distance (meters)>, <speed (RPM)>
+      {0, 0},
+      {2, 15},
+    });
   }
   public static final class Indexer {
     public static final class Pivot {
