@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -8,6 +10,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import lib.BlueShift.control.motor.LazyCANSparkFlex;
 import lib.BlueShift.control.motor.LazyCANSparkMax;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import lib.BlueShift.control.motor.LazySparkPID;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,27 +26,29 @@ public class ShooterSubsystem extends SubsystemBase {
     LazyCANSparkFlex lowerRoller;
     LazySparkPID lowerRollerPID;
 
-    boolean state;
+    Measure<Velocity<Angle>> velocitySetpoint = RPM.of(0.);
 
     public ShooterSubsystem() {
         this.upperRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kUpperRollerID, MotorType.kBrushless);
         this.upperRoller.setIdleMode(IdleMode.kCoast);
-        // TODO: Move to constants
-        this.upperRoller.setSmartCurrentLimit(20);
-        this.upperRoller.setClosedLoopRampRate(0.15);
+       
+        this.upperRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.UpperSmartCurrentLimit);
+        this.upperRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.UpperClosedLoopRampRate);
         this.upperRoller.setInverted(true);
 
         this.upperRollerPID = new LazySparkPID(this.upperRoller);
 
         this.lowerRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kLowerRollerID, MotorType.kBrushless);
         this.lowerRoller.setIdleMode(IdleMode.kCoast);
-        // TODO: Move to constants
-        this.lowerRoller.setSmartCurrentLimit(20);
-        this.lowerRoller.setClosedLoopRampRate(0.15);
+        
+        this.lowerRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.LowerSmartCurrentLimit);
+        this.lowerRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.lowerClosedLoopRampRate);
 
         this.lowerRollerPID = new LazySparkPID(this.lowerRoller);
     }
-
+    //TODO: quitar sets
+    //TODO: un spark siga a otro
+    //TODO: hacer comando en linea para RPM
     public void setUpperSpeed(double speed) {
         upperRoller.set(speed);
     }
