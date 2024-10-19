@@ -67,28 +67,22 @@ public final class Constants {
       public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
     public static final class Rollers {
-        // * Indexer motor config
-        public static final int kRollersMotorInID = 0;
-        public static final int kRollersMotorOutID = 1;
+      // * Indexer motor config
+      public static final int kRollersMotorInID = 0;
 
-        //* Sensors config
-        public static final int kpieceSwitchInPort = 0;
-        public static final int kpieceSwitchMiddlePort = 1;
+      //* Sensors config
+      public static final int kpieceSwitchInPort = 0;
+      public static final int kpieceSwitchMiddlePort = 1;
 
-        // * Speeds
-        //* In
-        public static final double krollersInReceivingSpeed = 0.5;
-        public static final double krollersInExpulsingSpeed = -0.5;
-        public static final double krollersInHoldSpeed = 0.05;
-        public static final double krollersInPassSpeed = 0.3;
-        public static final double krollersInRetainSpeed = 0.1;
-        //* Out
-        public static final double krollersOutReceivingSpeed = 0.5;
-        public static final double krollersOutExpulsingSpeed = -0.5;
-        public static final double krollersOutHoldSpeed = 0.05;
-        public static final double krollersOutPassSpeed = 0.3;  
-        public static final double krollersOutRetainSpeed = -0.1;
-      }
+      // * Speeds
+      //* Rollers
+      public static final double krollersInReceivingSpeed = 0.5;
+      public static final double krollersInExpulsingSpeed = -0.5;
+      public static final double krollersInHoldSpeed = 0.05;
+      public static final double krollersInPassSpeed = 0.3;
+      public static final double krollersInRetainSpeed = 0.1;
+
+    }
   }
 
   public static final class Vision {

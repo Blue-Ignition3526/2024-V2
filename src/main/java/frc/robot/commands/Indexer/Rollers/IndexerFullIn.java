@@ -1,13 +1,13 @@
-package frc.robot.commands.Indexer;
+package frc.robot.commands.Indexer.Rollers;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.Constants;
 import frc.robot.subsystems.IndexerRollers;
 
-public class IndexerFullOut extends Command {
+public class IndexerFullIn extends Command {
   private IndexerRollers rollers; //crea variable rollers del subsistema IndexRollers
 
-  public void IndexIn(IndexerRollers rollers) {
+  public void Indexer(IndexerRollers rollers) {
     this.rollers = rollers; // permite que la clase tenga acceso a este subsistema
     addRequirements(rollers); //deja que otros comandos que utilizen rollers puedan usarse pero le da prioridad a este cuando se usa
   }
@@ -19,7 +19,7 @@ public class IndexerFullOut extends Command {
 
   @Override
   public void execute() { //siempre
-    rollers.outakingFull(); // pone ambos rollers a full expulsar
+    rollers.setRollersSpeed(Constants.Indexer.Rollers.krollersInReceivingSpeed); // pone rollers a full recibir
   }
 
   @Override

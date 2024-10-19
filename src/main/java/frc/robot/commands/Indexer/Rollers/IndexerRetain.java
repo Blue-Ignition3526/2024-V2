@@ -1,9 +1,10 @@
-package frc.robot.commands.Indexer;
+package frc.robot.commands.Indexer.Rollers;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.IndexerRollers;
 
-public class IndexerOutReceive extends Command {
+public class IndexerRetain extends Command {
     private IndexerRollers rollers; // crea variable rollers del subsistema IndexRollers
 
     public void IndexIn(IndexerRollers rollers) {
@@ -20,14 +21,12 @@ public class IndexerOutReceive extends Command {
     @Override
     public void execute() { // siempre
         if (rollers.hasPieceIn()) {
-
-            rollers.setRollersInPassSpeed();
-
-            if (rollers.hasPieceMiddle()) {
-                rollers.setRollersOutReceivingSpeed();
-            } else {
-                rollers.stop();
+            rollers.setRollersSpeed(Constants.Indexer.Rollers.krollersInPassSpeed);
+            if (rollers.hasPieceMiddle ()){
+                rollers.setRollersSpeed(Constants.Indexer.Rollers.krollersInHoldSpeed);
             }
+        } else {
+            rollers.stop();
         }
     }
 

@@ -1,13 +1,12 @@
 package frc.robot;
 
-import frc.robot.commands.Indexer.IndexerFullIn;
-import frc.robot.commands.Indexer.IndexerFullOut;
 import frc.robot.commands.Indexer.IndexerOutPass;
 import frc.robot.commands.Indexer.IndexerOutReceive;
-import frc.robot.commands.Indexer.IndexerInReceive;
-
-import frc.robot.commands.Indexer.IndexerRetain;
 import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
+import frc.robot.commands.Indexer.Rollers.IndexerFullIn;
+import frc.robot.commands.Indexer.Rollers.IndexerFullOut;
+import frc.robot.commands.Indexer.Rollers.IndexerInReceive;
+import frc.robot.commands.Indexer.Rollers.IndexerRetain;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeOut;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
