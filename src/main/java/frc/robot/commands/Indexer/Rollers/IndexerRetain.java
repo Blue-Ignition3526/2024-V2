@@ -23,7 +23,7 @@ public class IndexerRetain extends Command {
         if (rollers.hasPieceIn()) {
             rollers.setRollersSpeed(Constants.Indexer.Rollers.krollersInPassSpeed);
             if (rollers.hasPieceMiddle ()){
-                rollers.setRollersSpeed(Constants.Indexer.Rollers.krollersInHoldSpeed);
+                rollers.stop();
             }
         } else {
             rollers.stop();
