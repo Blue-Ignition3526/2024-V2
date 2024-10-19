@@ -9,6 +9,8 @@ import frc.robot.Constants;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+// anotación: el trap no te hace ganar la competencia pero da ventaja 😛
+
 public class ClimberRestrictions extends Command {
     private final CANSparkMax climberMotor;
     private final ElevatorSubsystem elevator;

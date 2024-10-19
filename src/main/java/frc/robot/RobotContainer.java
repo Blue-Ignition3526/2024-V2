@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
+//⚠⚠⚠ Fijarse en que los subsistemas queden primero ⚠⚠⚠
+
 public class RobotContainer {
   // * Controller
   private final CustomController m_controller = new CustomController(0, CustomControllerType.XBOX);

@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.CANSparkMax;
 
+//TODO: Hacer PID 
+
 public class Climber extends SubsystemBase {
     String name;
 
@@ -21,7 +23,8 @@ public class Climber extends SubsystemBase {
         this.elevator = elevator;
         this.pivot = pivot;
     }
-
+    
+    //TODO: A base de posiciones
     public void set(double speed) {
         climberMotor.set(speed);
     }

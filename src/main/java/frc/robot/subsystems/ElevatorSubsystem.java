@@ -15,6 +15,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     private final CANSparkFlex motor;
     private final DutyCycleEncoder encoder;
 
+//TODO: Falta un motor
+//TODO: Checar las conversiones
+//TODO: Usar encoders de los motores
+//TODO: Poner el PID directo
+//TODO: Usar messures
+//TODO: Que use la PID de la libreria del motor
+//TODO: Usar PID normal o trapezoidal
+//TODO: Cambiar lógica de height
+
     private final double kP = 0.1;
     private final double kI = 0.0;
     private final double kD = 0.0;

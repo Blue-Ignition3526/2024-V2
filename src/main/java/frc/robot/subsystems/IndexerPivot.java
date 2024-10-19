@@ -35,6 +35,7 @@ public class IndexerPivot extends SubsystemBase {
 
   public IndexerPivot() {
     // Encoder
+    //TODO: Que el setpoint sea la posición en la que inicie
     this.indexerEncoder = new DutyCycleEncoder(Constants.Indexer.Pivot.kIndexerPivotEncoderPort);
     this.indexerEncoder.setPositionOffset(Constants.Indexer.Pivot.kIndexerPivotEncoderOffset.in(Rotation));
     
@@ -96,7 +97,7 @@ public class IndexerPivot extends SubsystemBase {
   }
 
   public boolean isPivotAtShooterAngle() {
-    return atSetpoint();  // Asumiendo que el setpoint es el ángulo deseado para disparar
+    return atSetpoint();  
 }
 
   @Override
@@ -115,6 +116,7 @@ public class IndexerPivot extends SubsystemBase {
       // TODO: If the setpoint is not reached, apply Feedforward
       double pid = Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle);
       // double ff = Constants.Indexer.Pivot.kIndexerPivotFeedforward.calculate(pid);
+      //TODO: Quitar clamp tunear constraints 
       setVoltage = MathUtil.clamp(
         pid,
         Constants.Indexer.Pivot.kIndexerPivotMotorMinVoltage,
