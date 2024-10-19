@@ -46,7 +46,7 @@ public final class Constants {
   }
 
   // * Shooter
-    // TODO: subir limit
+    // TODO: subir limit (listo creo)
   // TODO: Check speeds
   // TODO: Check angles
   // TODO: Set motor IDs
@@ -65,9 +65,9 @@ public final class Constants {
       {0, 0},
       {2, 15},
     });
-    public static final int UpperSmartCurrentLimit = 20; // voltage limit of upper roller
+    public static final int UpperSmartCurrentLimit = 40; // voltage limit of upper roller
     public static final double UpperClosedLoopRampRate  = 0.15; // velocity from 0 to 100 upprt roller
-    public static final int LowerSmartCurrentLimit = 20; //voltage limit from lower roller
+    public static final int LowerSmartCurrentLimit = 40; //voltage limit from lower roller
     public static final double lowerClosedLoopRampRate = 0.15; // velocity from 0 to 100 lower roller
   }
 

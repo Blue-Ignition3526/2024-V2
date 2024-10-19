@@ -46,15 +46,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
         this.lowerRollerPID = new LazySparkPID(this.lowerRoller);
     }
-    //TODO: quitar sets
-    //TODO: un spark siga a otro
+    //TODO: quitar sets (listo creo)
+    //TODO: un spark siga a otro (listo creo)
     //TODO: hacer comando en linea para RPM
     public void setUpperSpeed(double speed) {
-        upperRoller.set(speed);
+        
     }
 
     public void setLowerSpeed(double speed) {
-        lowerRoller.set(speed);
+        
     }
 
     public void shoot(double upperSpeed, double lowerSpeed) {
