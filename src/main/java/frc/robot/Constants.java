@@ -74,6 +74,9 @@ public final class Constants {
       public static final int kpieceSwitchInPort = 0;
       public static final int kpieceSwitchMiddlePort = 1;
 
+      //* Current Limiter
+      public static final int krollersCurrentLimiterInAmps = 20;
+
       // * Speeds
       //* Rollers
       public static final double krollersInReceivingSpeed = 0.5;

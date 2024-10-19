@@ -1,11 +1,10 @@
 package frc.robot;
 
-import frc.robot.commands.Indexer.IndexerOutPass;
-import frc.robot.commands.Indexer.IndexerOutReceive;
 import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
 import frc.robot.commands.Indexer.Rollers.IndexerFullIn;
 import frc.robot.commands.Indexer.Rollers.IndexerFullOut;
 import frc.robot.commands.Indexer.Rollers.IndexerInReceive;
+import frc.robot.commands.Indexer.Rollers.IndexerPassToShooter;
 import frc.robot.commands.Indexer.Rollers.IndexerRetain;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeOut;
@@ -95,8 +94,7 @@ public class RobotContainer {
     controller.rightBumper().whileTrue(new IndexerFullIn());
 
     controller.rightTrigger().whileTrue(new IndexerInReceive());
-    controller.rightTrigger().whileTrue(new IndexerOutPass());
-    controller.rightTrigger().whileTrue(new IndexerOutReceive());
+    controller.rightTrigger().whileTrue(new IndexerPassToShooter());
 
     controller.leftTrigger().whileTrue(new IndexerRetain());
 

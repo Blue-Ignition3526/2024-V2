@@ -23,6 +23,7 @@ public class IndexerRollers extends SubsystemBase {
         this.rollersMotor = new CANSparkMax(Constants.Indexer.Rollers.kRollersMotorInID, MotorType.kBrushless); // pone el id y brushless del primer motor de los rollers
         this.pieceSwitchIn = new DigitalInput(Constants.Indexer.Rollers.kpieceSwitchInPort); // el puerto de roborio del sensor de deteccion de nota primero
         this.pieceSwitchMiddle = new DigitalInput(Constants.Indexer.Rollers.kpieceSwitchMiddlePort); // el puerto de roborio del sensor de deteccion de nota segundo
+        rollersMotor.setSmartCurrentLimit(Constants.Indexer.Rollers.krollersCurrentLimiterInAmps);
     }
 
     // * Idle modes (for not damaging gearbox)
