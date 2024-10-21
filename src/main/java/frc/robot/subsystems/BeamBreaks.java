@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+// TODO: Checar esta estructura, la neta no me gusto 💀
 public class BeamBreaks extends SubsystemBase {
   private final HashMap<String, DigitalInput> m_beamBreaks = new HashMap<>();
 
@@ -36,6 +37,10 @@ public class BeamBreaks extends SubsystemBase {
     for (BeamBreak beamBreak : BeamBreak.values()) {
       m_beamBreaks.put(beamBreak.getName(), new DigitalInput(beamBreak.getChannel()));
     }
+  }
+
+  public boolean get(BeamBreak beamBreak) {
+    return m_beamBreaks.get(beamBreak.getName()).get();
   }
 
   @Override

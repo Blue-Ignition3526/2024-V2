@@ -15,7 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
  * <br>
  * <br>
  * <code>
- * `implementation 'org.java-websocket:Java-WebSocket:1.5.7'` 
+ * implementation 'org.java-websocket:Java-WebSocket:1.5.7'
  * </code>
  * <br>
  * <br>

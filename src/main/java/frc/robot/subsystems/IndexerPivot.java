@@ -26,17 +26,15 @@ public class IndexerPivot extends SubsystemBase {
   private final LazyCANSparkMax m_pivotMotor;
 
   // Control
-  private Measure<Angle> m_setpoint = Degrees.of(0);
-
-  // Mechanism
-  private Mechanism2d m_pivotMechanism;
-  private MechanismRoot2d m_pivotRoot;
-  private MechanismLigament2d m_pivotLigament;
+  private Measure<Angle> m_setpoint;
 
   public IndexerPivot() {
     // Encoder
     this.indexerEncoder = new DutyCycleEncoder(Constants.Indexer.Pivot.kIndexerPivotEncoderPort);
     this.indexerEncoder.setPositionOffset(Constants.Indexer.Pivot.kIndexerPivotEncoderOffset.in(Rotation));
+    
+    // Reset setpoint
+    this.m_setpoint = getAngle();
     
     // Motor
     this.m_pivotMotor = new LazyCANSparkMax(Constants.Indexer.Pivot.kIndexerPivotMotorId, MotorType.kBrushless);
@@ -45,14 +43,10 @@ public class IndexerPivot extends SubsystemBase {
 
     // Control
     SmartDashboard.putData("Indexer/Pivot/PIDController", Constants.Indexer.Pivot.kIndexerPivotPIDController);
-
-    // Mechanism
-    this.m_pivotMechanism = new Mechanism2d(3, 3);
-    this.m_pivotRoot = m_pivotMechanism.getRoot("Root", 1, 2);
-    this.m_pivotLigament = new MechanismLigament2d("Pivot", 1, 0);
   }
 
   // TODO: Implement emergency home and use motor encoder if absolute encoder fails
+
   /**
    * Check if the encoder is connected
    * @return true if the encoder is connected
@@ -111,11 +105,7 @@ public class IndexerPivot extends SubsystemBase {
       // TODO: If the setpoint is not reached, apply Feedforward
       double pid = Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle);
       // double ff = Constants.Indexer.Pivot.kIndexerPivotFeedforward.calculate(pid);
-      setVoltage = MathUtil.clamp(
-        pid,
-        Constants.Indexer.Pivot.kIndexerPivotMotorMinVoltage,
-        Constants.Indexer.Pivot.kIndexerPivotMotorMaxVoltage
-      );
+      setVoltage = pid;
     } else {
       // TODO: Check for weird behaviors
       SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", true);
@@ -124,15 +114,11 @@ public class IndexerPivot extends SubsystemBase {
 
     // Update motor voltage
     m_pivotMotor.setVoltage(setVoltage);
-
-    // Update Mechanism2d
-    m_pivotLigament.setAngle(currentAngle);
     
     // Update SmartDashboard
     SmartDashboard.putNumber("Indexer/Pivot/CurrentAngle", currentAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointAngle", setpointAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetVoltage", setVoltage);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError());
-    SmartDashboard.putData("Indexer/Pivot/Mechanism", m_pivotMechanism);
   }
 }

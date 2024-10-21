@@ -53,8 +53,6 @@ public final class Constants {
       // TODO: Set motor ID
       public static final int kIndexerPivotMotorId = 8;
       public static final int kIndexerPivotMotorMaxCurrent = 20;
-      public static final double kIndexerPivotMotorMaxVoltage = 8;
-      public static final double kIndexerPivotMotorMinVoltage = -kIndexerPivotMotorMaxVoltage;
   
       // * Control
       // TODO: Check values
@@ -117,6 +115,8 @@ public final class Constants {
 
         // * Heading Controller
         public static final Measure<Angle> kHeadingTolerance = Degrees.of(3);
+        public static final TrapezoidProfile.Constraints kHeadingConstraints = new TrapezoidProfile.Constraints(100, 10);
+        public static final ProfiledPIDController kHeadingController = new ProfiledPIDController(0.1, 0, 0, kHeadingConstraints);
 
         // * Physical model of the robot
         public static final class PhysicalModel {
