@@ -26,6 +26,10 @@ public class LazySparkPID {
         this.controller = spark.getPIDController();
     }
 
+    public LazySparkPID(LazyCANSparkFlex spark) {
+        this.controller = spark.getPIDController();
+    }
+
     public void setReference(double reference, ControlType controlType) {
         if (reference != lastReference || controlType != lastControlType) {
             controller.setReference(reference, controlType);

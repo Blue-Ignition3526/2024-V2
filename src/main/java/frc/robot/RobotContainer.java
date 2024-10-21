@@ -5,6 +5,7 @@ import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Gyro.Gyro;
@@ -37,6 +38,10 @@ public class RobotContainer {
   // * Intake
   private final Intake m_intake;
 
+  // shooter
+  private final ShooterSubsystem m_ShooterSubsystem;
+
+
   // * Indexer Pivot
   private final IndexerPivot m_indexerPivot;
 
@@ -55,6 +60,10 @@ public class RobotContainer {
 
     // Intake
     this.m_intake = new Intake();
+
+    //shooter
+    this.m_ShooterSubsystem = new ShooterSubsystem();
+
 
     // Indexer Pivot
     this.m_indexerPivot = new IndexerPivot();

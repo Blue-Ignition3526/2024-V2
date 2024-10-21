@@ -24,6 +24,7 @@ import edu.wpi.first.units.Velocity;
 import lib.BlueShift.constants.CTRECANDevice;
 import lib.BlueShift.constants.PIDFConstants;
 import lib.BlueShift.constants.SwerveModuleOptions;
+import lib.BlueShift.math.InterpolatingTable;
 import lib.BlueShift.utils.SwerveChassis;
 
 public final class Constants {
@@ -40,6 +41,33 @@ public final class Constants {
     public static final int kMotorMaxCurrent = 10;
   }
 
+  // * Shooter
+    // TODO: subir limit (listo creo)
+  // TODO: Check speeds
+  // TODO: Check angles
+  // TODO: Set motor IDs
+  public static final class ShooterSubsystem {
+    public static final int kUpperRollerID = 1;
+    public static final int kLowerRollerID = 2;
+
+    public static final InterpolatingTable kShooterSpeed = new InterpolatingTable(new double[][] {
+      // <distance (meters)>, <speed (RPM)>
+      {0, 80},
+      {2, 160},
+    });
+
+    public static final InterpolatingTable kIndexerAngle = new InterpolatingTable(new double[][] {
+      // <distance (meters)>, <speed (RPM)>
+      {0, 0},
+      {2, 15},
+    });
+    public static final int UpperSmartCurrentLimit = 40; // voltage limit of upper roller
+    public static final double UpperClosedLoopRampRate  = 0.15; // velocity from 0 to 100 upprt roller
+    public static final int LowerSmartCurrentLimit = 40; //voltage limit from lower roller
+    public static final double lowerClosedLoopRampRate = 0.15; // velocity from 0 to 100 lower roller
+  }
+
+  // indexer
   public static final class Indexer {
     public static final class Pivot {
       // * Encoder
