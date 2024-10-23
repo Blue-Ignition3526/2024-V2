@@ -28,6 +28,28 @@ import lib.BlueShift.constants.SwerveModuleOptions;
 import lib.BlueShift.utils.SwerveChassis;
 
 public final class Constants {
+
+  public static class Elevator {
+    //Motors Id
+    public static final int kleftElevatorMotorId = 2;
+    public static final int krightElevatorMotorId = 3;
+
+    //PID
+
+    public static final double kElevatorP = 0.1;
+    public static final double kElevatorI = 0.0;
+    public static final double kElevatorD = 0.0;
+
+    //Bounds 
+    public static final double kupperBound = 10.0;
+    public static final double kmediumBound = 5.0;
+    public static final double klowerBound = 0.0;
+
+    //Speeds
+    public static final double kspeedUp = 0.3;
+    public static final double kspeedDown = -0.3;
+    public static final double kspeedInPlace = 0.05;
+  }
   public static class Intake {
     // * Speeds
     // TODO: Check speeds
