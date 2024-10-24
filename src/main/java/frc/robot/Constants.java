@@ -7,6 +7,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.UpperCamelCaseStrategy;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -46,11 +49,16 @@ public final class Constants {
   // TODO: Check speeds
   // TODO: Check angles
   // TODO: Set motor IDs
+  
   public static final class ShooterSubsystem {
     public static final int kUpperRollerID = 1;
     public static final int kLowerRollerID = 2;
-
+    public static final double upperSpeed = 0;
+    public static final double lowerSpeed = 0;
+    public static final double finalLowerSpeed = 0;
+    public static final double finalUpperSpeed = 0;
     public static final InterpolatingTable kShooterSpeed = new InterpolatingTable(new double[][] {
+      
       // <distance (meters)>, <speed (RPM)>
       {0, 80},
       {2, 160},

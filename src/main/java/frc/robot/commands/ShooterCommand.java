@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 // lower y upper rollers
 
@@ -19,27 +22,27 @@ public class ShooterCommand extends Command {
     public ShooterCommand(ShooterSubsystem shooter){
         this.shooter = shooter;
         addRequirements(shooter);
+    
     }
 
     @Override
     public void initialize(){
-    
+        shooter.setShooterSpeed(Constants.ShooterSubsystem.upperSpeed, Constants.ShooterSubsystem.lowerSpeed);
+        
+
     }
 
 @Override
     public void execute() {
-     //   double distance = limelight.getDistance(); 
-      //  double upperSpeed = calculateUpperSpeed(distance);
-      //  double lowerSpeed = calculateLowerSpeed(distance);
-      //  shooter.shoot(upperSpeed, lowerSpeed);
+
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooter.stop();
     }
     @Override
     public boolean isFinished() {
+        double speedError = Math.abs(int setShooterSpeed - upperSpeed, loserSpeed());
         return false; // Continúa hasta que se interrumpa
     }
     //TODO: mover calculates
