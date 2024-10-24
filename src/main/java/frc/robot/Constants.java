@@ -31,18 +31,18 @@ public final class Constants {
   public static class Intake {
     // * Speeds
     // TODO: Check speeds
-    public static final double kInSpeed = -0.5d;
-    public static final double kOutSpeed = 0.5d;
-    public static final double kAvoidSpeed = 0.05d;
+    public static final double kInSpeed = 0.75d;
+    public static final double kOutSpeed = -0.3d;
+    public static final double kAvoidSpeed = -0.05d;
 
     // * Motor
     // TODO: Set motor ID
     public static final int kMotorId = 5;
-    public static final int kMotorMaxCurrent = 10;
+    public static final int kMotorMaxCurrent = 40;
   }
 
   // * Shooter
-    // TODO: subir limit (listo creo)
+  // TODO: subir limit (listo creo)
   // TODO: Check speeds
   // TODO: Check angles
   // TODO: Set motor IDs
@@ -57,7 +57,7 @@ public final class Constants {
     });
 
     public static final InterpolatingTable kIndexerAngle = new InterpolatingTable(new double[][] {
-      // <distance (meters)>, <speed (RPM)>
+      // <distance (meters)>, <angle (degrees)>
       {0, 0},
       {2, 15},
     });
@@ -65,6 +65,8 @@ public final class Constants {
     public static final double UpperClosedLoopRampRate  = 0.15; // velocity from 0 to 100 upprt roller
     public static final int LowerSmartCurrentLimit = 40; //voltage limit from lower roller
     public static final double lowerClosedLoopRampRate = 0.15; // velocity from 0 to 100 lower roller
+
+    public static final double kVelocityToleranceRPM = 10;
   }
 
   // indexer
