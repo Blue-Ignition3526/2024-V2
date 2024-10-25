@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class ShooterSubsystem extends SubsystemBase {
+
     // * Upper Roller
     LazyCANSparkFlex upperRoller;
     LazySparkPID upperRollerPID;
@@ -55,20 +56,31 @@ public class ShooterSubsystem extends SubsystemBase {
     //TODO: un spark siga a otro (listo creo)
     //TODO: hacer comando en linea para RPM
     public void setUpperSpeed(double speed) {
-        
     }
 
     public void setLowerSpeed(double speed) {
+
+    }
+
+    public void setTargetUpperSpeed(double finalSpeed){
+
+    }
+
+    public void setTargetLowerSpeed(double finalSpeed){
+
+    }
+
+    public void setShooterSpeed(double upperSpeed, double lowerSpeed) {
+        upperRoller.set(0);
+        lowerRoller.set(0);
+        //setUpperSpeed(upperSpeed);
+        //setLowerSpeed(lowerSpeed);
         
     }
 
-    public void shoot(double upperSpeed, double lowerSpeed) {
-        setUpperSpeed(upperSpeed);
-        setLowerSpeed(lowerSpeed);
-    }
 
     public void stop() {
-        shoot(0, 0);
+        setShooterSpeed(0, 0);
     }
 
     public Command setRpm(Measure<Velocity<Angle>> rpm) {
