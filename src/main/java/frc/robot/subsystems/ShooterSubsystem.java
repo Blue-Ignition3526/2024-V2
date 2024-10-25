@@ -80,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
             return 
                 Math.abs(upperRollerEncoder.getVelocity() - rpm.in(RPM)) <= Constants.ShooterSubsystem.kVelocityToleranceRPM &&
                 Math.abs(lowerRollerEncoder.getVelocity() - rpm.in(RPM)) <= Constants.ShooterSubsystem.kVelocityToleranceRPM;
-        }).;
+        });
     }
 
     @Override

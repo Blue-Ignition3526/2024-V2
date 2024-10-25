@@ -163,7 +163,7 @@ public final class Constants {
 
             // * Gear ratios
             public static final double kDriveMotorGearRatio = 1.0 / 6.75;
-            public static final double kTurningMotorGearRatio = 1.0 / (150 / 7);
+            public static final double kTurningMotorGearRatio = 1.0 / 21.428571428571427;
 
             // * Conversion factors (Drive Motor) DO NOT CHANGE
             public static final double kDriveEncoder_RotationToMeter = kDriveMotorGearRatio * (kWheelDiameter.in(Meters) / 2) * 2 * Math.PI;
@@ -175,7 +175,7 @@ public final class Constants {
 
             // * Robot Without bumpers measures
             public static final Measure<Distance> kTrackWidth = Inches.of(26);
-            public static final Measure<Distance> kWheelBase = Inches.of(30.5);
+            public static final Measure<Distance> kWheelBase = Inches.of(26);
     
             // * Create a kinematics instance with the positions of the swerve modules
             public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(SwerveChassis.sizeToModulePositions(kTrackWidth.in(Meters), kWheelBase.in(Meters)));
@@ -192,6 +192,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(11, "*"))
                 .setDriveMotorID(22)
                 .setTurningMotorID(21)
+                .setTurningMotorInverted(true)
                 .setName("Front Left");
 
             public static final SwerveModuleOptions kFrontRightOptions = new SwerveModuleOptions()
@@ -199,6 +200,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(12, "*"))
                 .setDriveMotorID(24)
                 .setTurningMotorID(23)
+                .setTurningMotorInverted(true)
                 .setName("Front Right");
 
             public static final SwerveModuleOptions kBackLeftOptions = new SwerveModuleOptions()
@@ -206,6 +208,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(13, "*"))
                 .setDriveMotorID(26)
                 .setTurningMotorID(25)
+                .setTurningMotorInverted(true)
                 .setName("Back Left");
 
             public static final SwerveModuleOptions kBackRightOptions = new SwerveModuleOptions()
@@ -213,6 +216,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(14, "*"))
                 .setDriveMotorID(28)
                 .setTurningMotorID(27)
+                .setTurningMotorInverted(true)
                 .setName("Back Right");
         }
     }
