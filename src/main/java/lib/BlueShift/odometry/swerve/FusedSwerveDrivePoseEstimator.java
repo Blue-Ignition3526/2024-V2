@@ -98,6 +98,7 @@ public class FusedSwerveDrivePoseEstimator extends SubsystemBase implements Esti
     estimator.resetPosition(headingSupplier.get(), modulePositionsSupplier.get(), estimate.get().pose);
   }
 
+  // TODO: Multithreaded
   public synchronized void update() {
     estimator.update(headingSupplier.get(), modulePositionsSupplier.get());
   

@@ -5,10 +5,13 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.UpperCamelCaseStrategy;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -25,9 +29,56 @@ import edu.wpi.first.units.Velocity;
 import lib.BlueShift.constants.CTRECANDevice;
 import lib.BlueShift.constants.PIDFConstants;
 import lib.BlueShift.constants.SwerveModuleOptions;
+import lib.BlueShift.math.InterpolatingTable;
 import lib.BlueShift.utils.SwerveChassis;
 
 public final class Constants {
+
+  public static class Elevator {
+    //Motors Id
+    public static final int kleftElevatorMotorId = 2;
+    public static final int krightElevatorMotorId = 3;
+
+    //Values of Concersions
+    public static final double kradiansToInches = 1.897; 
+
+    //Motion (PID and Constraints)
+    // TODO: add the correct maxVelocity and maxAcceleration
+    public static final Constraints kElevatorConstraints = new Constraints(26, 35);
+    public static final ProfiledPIDController kElevatorPIDController = new ProfiledPIDController(0.1, 0, 0, kElevatorConstraints);
+
+    //Bounds in inches
+    public static final double kupperBound = 8.0;
+    public static final double kmediumBound = 5.0;
+    public static final double klowerBound = 0.0;
+
+    public enum ElevatorPosition {
+      HIGH("High", 8.0),
+      MEDIUM("Medium", 5.0 ),
+      LOW("Low", 0.0);
+
+      private final String name;
+      private final double position;
+
+      ElevatorPosition(String name, double position){
+        this.name = name;
+        this.position = position;
+      }
+
+      public String getName(){
+        return name;
+      }
+
+      public double getPosition(){
+        return position;
+      }
+    }
+
+    //Speeds
+    public static final double kspeedUp = 0.3;
+    public static final double kspeedDown = -0.3;
+    public static final double kspeedInPlace = 0.05;
+  }
   public static class Intake {
     // * Speeds
     // TODO: Check speeds
@@ -35,17 +86,13 @@ public final class Constants {
     public static final double kOutSpeed = 0.5d;
     public static final double kAvoidSpeed = 0.05d;
 
-   
     // * Motor
-    // TODO: Set motor ID
     public static final int kMotorId = 5;
     public static final int kMotorMaxCurrent = 10;
 
     // * Beam Break
     public static final int kBeamBreakPort = 0;
   }
-
-
 
   public static final class Indexer {
     public static final class Pivot {
@@ -60,8 +107,6 @@ public final class Constants {
       // TODO: Set motor ID
       public static final int kIndexerPivotMotorId = 8;
       public static final int kIndexerPivotMotorMaxCurrent = 20;
-      public static final double kIndexerPivotMotorMaxVoltage = 8;
-      public static final double kIndexerPivotMotorMinVoltage = -kIndexerPivotMotorMaxVoltage;
   
       // * Control
       // TODO: Check values
@@ -69,6 +114,12 @@ public final class Constants {
       public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.15, 0, 0, kIndexerPivotConstraints);
       public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
+  }
+
+  public static final class BreamBreaks {
+    public static final int kIntakeBeamBreakPort = 1;
+    public static final int kIndexerStage1BeamBreakPort = 2;
+    public static final int kIndexerStage2BeamBreakPort = 3;
   }
 
   public static final class Vision {
@@ -118,11 +169,13 @@ public final class Constants {
 
         // * Heading Controller
         public static final Measure<Angle> kHeadingTolerance = Degrees.of(3);
+        public static final TrapezoidProfile.Constraints kHeadingConstraints = new TrapezoidProfile.Constraints(100, 10);
+        public static final ProfiledPIDController kHeadingController = new ProfiledPIDController(0.1, 0, 0, kHeadingConstraints);
 
         // * Physical model of the robot
         public static final class PhysicalModel {
             // * MAX DISPLACEMENT SPEED (and acceleration)
-            public static Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(4.3);
+            public static Measure<Velocity<Distance>> kMaxSpeed = MetersPerSecond.of(4);
             public static final Measure<Velocity<Velocity<Distance>>> kMaxAcceleration = MetersPerSecondPerSecond.of(3);
 
             // * MAX ROTATIONAL SPEED (and acceleration)
@@ -133,24 +186,20 @@ public final class Constants {
             public static final Measure<Distance> kWheelDiameter = Inches.of(4);
 
             // * Gear ratios
-            public static final double kDriveMotorGearRatio = 1.0 / 6.12; // 6.12:1 Drive
-            public static final double kTurningMotorGearRatio = 1.0 / 12.8; // 12.8:1 Steering
+            public static final double kDriveMotorGearRatio = 1.0 / 6.75;
+            public static final double kTurningMotorGearRatio = 1.0 / 21.428571428571427;
 
-            // * Conversion factors (Drive Motor)
+            // * Conversion factors (Drive Motor) DO NOT CHANGE
             public static final double kDriveEncoder_RotationToMeter = kDriveMotorGearRatio * (kWheelDiameter.in(Meters) / 2) * 2 * Math.PI;
             public static final double kDriveEncoder_RPMToMeterPerSecond = kDriveEncoder_RotationToMeter / 60.0;
 
-            // * Conversion factors (Turning Motor)
+            // * Conversion factors (Turning Motor) DO NOT CHANGE
             public static final double kTurningEncoder_RotationToRadian = kTurningMotorGearRatio * 2.0 * Math.PI;
             public static final double kTurningEncoder_RPMToRadianPerSecond = kTurningEncoder_RotationToRadian / 60.0;
 
             // * Robot Without bumpers measures
-            public static final Measure<Distance> kTrackWidth = Inches.of(23.08);
-            public static final Measure<Distance> kWheelBase = Inches.of(22.64);
-
-            // * Robot with bumpers
-            public static final Measure<Distance> kWidthWithBumpers = Meters.of(0.56);
-            public static final Measure<Distance> kLengthWithBumpers = Meters.of(0.56);
+            public static final Measure<Distance> kTrackWidth = Inches.of(26);
+            public static final Measure<Distance> kWheelBase = Inches.of(30.5);
     
             // * Create a kinematics instance with the positions of the swerve modules
             public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(SwerveChassis.sizeToModulePositions(kTrackWidth.in(Meters), kWheelBase.in(Meters)));
@@ -167,6 +216,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(11, "*"))
                 .setDriveMotorID(22)
                 .setTurningMotorID(21)
+                .setTurningMotorInverted(true)
                 .setName("Front Left");
 
             public static final SwerveModuleOptions kFrontRightOptions = new SwerveModuleOptions()
@@ -174,6 +224,7 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(12, "*"))
                 .setDriveMotorID(24)
                 .setTurningMotorID(23)
+                .setTurningMotorInverted(true)
                 .setName("Front Right");
 
             public static final SwerveModuleOptions kBackLeftOptions = new SwerveModuleOptions()
@@ -181,13 +232,16 @@ public final class Constants {
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(13, "*"))
                 .setDriveMotorID(26)
                 .setTurningMotorID(25)
+                .setTurningMotorInverted(true)
                 .setName("Back Left");
+
 
             public static final SwerveModuleOptions kBackRightOptions = new SwerveModuleOptions()
                 .setAbsoluteEncoderInverted(false)
                 .setAbsoluteEncoderCANDevice(new CTRECANDevice(14, "*"))
                 .setDriveMotorID(28)
                 .setTurningMotorID(27)
+                .setTurningMotorInverted(true)
                 .setName("Back Right");
         }
     }
