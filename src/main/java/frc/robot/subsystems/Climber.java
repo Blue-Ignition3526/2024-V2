@@ -6,50 +6,61 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import lib.BlueShift.control.motor.LazyCANSparkMax;
+import lib.BlueShift.control.motor.LazySparkPID;
+
+import org.w3c.dom.views.DocumentView;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 
 //TODO: Hacer PID 
 
 public class Climber extends SubsystemBase {
     String name;
 
-    private final CANSparkMax climberMotor;
-    private final ElevatorSubsystem elevator;
-    private final IndexerPivot pivot;
+    private final LazyCANSparkMax leftClimberMotor;
+    private final LazyCANSparkMax rightClimberMotor;
+    private final RelativeEncoder climberEncoder;
+    private final ProfiledPIDController climberMotorPID;  
+    private double climberSetPoint;  
 
-    public Climber(int motorID, String name,ElevatorSubsystem elevator, IndexerPivot pivot) {
-        this.name = name;
-        this.climberMotor = new CANSparkMax(motorID, MotorType.kBrushless);
-        this.elevator = elevator;
-        this.pivot = pivot;
+    public Climber(){
+        this.rightClimberMotor = new LazyCANSparkMax(Constants.Climber.leftClimberMotorID, MotorType.kBrushless);
+        this.leftClimberMotor = new LazyCANSparkMax(Constants.Climber.rightClimberMotorID, MotorType.kBrushless);
+        this.leftClimberMotor.follow(this.rightClimberMotor);
+        this.climberEncoder = rightClimberMotor.getEncoder();
+        this.climberMotorPID = Constants.Climber.kclimberPIDController;
+        this.climberEncoder.setPositionConversionFactor(Constants.Climber.kclimberEncoder_RotationToInches); 
+        this.climberEncoder.setVelocityConversionFactor(Constants.Climber.kclimberEncoder_RPMToInchesPerSecond);
+
     }
     
     //TODO: A base de posiciones
-    public void set(double speed) {
-        climberMotor.set(speed);
+
+
+    public void setPosition(double position) {
+        climberSetPoint = position;
     }
 
-    public void setClimberUp() {
-    if (elevator.isAtHighHeight() && pivot.isPivotAtShooterAngle()) {
-        climberMotor.set(Constants.Climber.kClimberUpSpeed);
-    }
-    }
-
-    public void setClimberDown() {
-        climberMotor.set(Constants.Climber.kClimberDownSpeed);
+    public double getPosition() {
+        return climberEncoder.getPosition();
     }
 
     public void stop() {
-        climberMotor.set(0);
+        rightClimberMotor.set(0);
     }
 
     public double getCurrent() {
-        return climberMotor.getOutputCurrent();
+        return rightClimberMotor.getOutputCurrent();
+    }
+
+    @Override
+    public void periodic(){
+        rightClimberMotor.setVoltage(climberMotorPID.calculate(getPosition(),climberSetPoint));
     }
 
     // TODO: Get the height of the climbers
     // TODO: Add enums for climber positions
-    public Measure<Distance> getPosition() {
-        return null;
-    }
 }

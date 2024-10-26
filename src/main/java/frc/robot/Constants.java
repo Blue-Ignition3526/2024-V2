@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -35,6 +35,7 @@ public final class Constants {
     public static final double kOutSpeed = 0.5d;
     public static final double kAvoidSpeed = 0.05d;
 
+   
     // * Motor
     // TODO: Set motor ID
     public static final int kMotorId = 5;
@@ -64,7 +65,7 @@ public final class Constants {
   
       // * Control
       // TODO: Check values
-      public static final TrapezoidProfile.Constraints kIndexerPivotConstraints = new TrapezoidProfile.Constraints(500, 500);
+      public static final Constraints kIndexerPivotConstraints = new Constraints(500, 500);
       public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.15, 0, 0, kIndexerPivotConstraints);
       public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
@@ -193,6 +194,12 @@ public final class Constants {
       // * CLIMBER
       public static final class Climber {
         // Climber motor config
+        public static final double kclimberMotorGearRatio = 1.0 / 16; // 16:1 climber
+        public static final Measure<Distance> kSprocketDiameter = Inches.of(1.16);
+        public static final double kclimberEncoder_RotationToInches = kclimberMotorGearRatio * (kSprocketDiameter.baseUnitMagnitude()) * Math.PI;
+        public static final double kclimberEncoder_RPMToInchesPerSecond = kclimberEncoder_RotationToInches / 60.0;
+        
+
         public static final int kLeftClimberMotorID = 33;
         public static final int kRightClimberMotorID = 32;
 
@@ -202,5 +209,13 @@ public final class Constants {
 
         // Max current (Used for reseting the climber)
         public static final double kMaxCurrent = 20;
+
+        //Climers ID
+        public static final int leftClimberMotorID = 30;
+        public static final int rightClimberMotorID = 31;
+
+        public static final Constraints kclimberConstraints = new Constraints(36, 20);
+        public static final ProfiledPIDController kclimberPIDController = new ProfiledPIDController(2.5, 0.0, 0.0, kclimberConstraints);
+   
     }
 }
