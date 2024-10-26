@@ -1,7 +1,10 @@
 package frc.robot;
 
 import frc.robot.commands.SwerveDrive.DriveSwerve;
+import frc.robot.subsystems.BeamBreaks;
+import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Gyro.Gyro;
@@ -31,12 +34,14 @@ public class RobotContainer {
   // * Intake
   private final Intake m_intake;
 
-  // shooter
-  // private final ShooterSubsystem m_ShooterSubsystem;
-
+  // * Shooter
+  private final Shooter m_ShooterSubsystem;
 
   // * Indexer Pivot
-  // private final IndexerPivot m_indexerPivot;
+  private final IndexerPivot m_indexerPivot;
+
+  // * BeamBreaks
+  private final BeamBreaks m_beamBreaks;
 
   public RobotContainer() {
     // Gyro
@@ -53,6 +58,15 @@ public class RobotContainer {
 
     // Intake
     this.m_intake = new Intake();
+
+    // Shooter
+    this.m_ShooterSubsystem = new Shooter();
+
+    // Indexer Pivot
+    this.m_indexerPivot = new IndexerPivot();
+
+    // BeamBreaks
+    this.m_beamBreaks = new BeamBreaks();
 
     SmartDashboard.putData("ZeroHeading", new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     SmartDashboard.putData("ResetTurningEncoders", new InstantCommand(() -> m_swerveDrive.resetTurningEncoders()));
