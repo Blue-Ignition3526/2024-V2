@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkFlex;
@@ -16,15 +12,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 
 
 public class Elevator extends SubsystemBase {
-
+    // * Motors
     private final CANSparkFlex leftElevatorMotor;
     private final CANSparkFlex rightElevatorMotor;
 
+    // * Encoder
     private final RelativeEncoder encoder;
-
-    private final ProfiledPIDController elevatorPID;
-
-    private final double radiansToInches;
 
     // Constructor
     public Elevator () {
@@ -36,10 +29,6 @@ public class Elevator extends SubsystemBase {
         leftElevatorMotor.follow(rightElevatorMotor);
 
         this.encoder = rightElevatorMotor.getEncoder();
-
-        this.elevatorPID = new ProfiledPIDController(Constants.Elevator.kElevatorP, Constants.Elevator.kElevatorI, Constants.Elevator.kElevatorD, Constants.Elevator.kElevatorConstraints);
-
-        this.radiansToInches = Constants.Elevator.kradiansToInches; // How many rotations are how many inches in height 
     
     }
 
@@ -48,11 +37,11 @@ public class Elevator extends SubsystemBase {
     }   
 
     public void setPosition(double position){
-        setSpeed(elevatorPID.calculate(getPosition(), position));
+        setSpeed(Constants.Elevator.kElevatorPIDController.calculate(getPosition(), position));
     }
 
     public double getPosition () {
-        return (2*Math.PI/encoder.getPosition()) * radiansToInches;
+        return (2*Math.PI/encoder.getPosition()) * Constants.Elevator.kradiansToInches;
     }
 
 

@@ -35,7 +35,7 @@ public class RobotContainer {
   private final Intake m_intake;
 
   // * Shooter
-  private final Shooter m_ShooterSubsystem;
+  private final Shooter m_shooter;
 
   // * Indexer Pivot
   private final IndexerPivot m_indexerPivot;
@@ -60,7 +60,7 @@ public class RobotContainer {
     this.m_intake = new Intake();
 
     // Shooter
-    this.m_ShooterSubsystem = new Shooter();
+    this.m_shooter = new Shooter();
 
     // Indexer Pivot
     this.m_indexerPivot = new IndexerPivot();
@@ -70,13 +70,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("ZeroHeading", new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     SmartDashboard.putData("ResetTurningEncoders", new InstantCommand(() -> m_swerveDrive.resetTurningEncoders()));
-
-    //shooter
-    // this.m_ShooterSubsystem = new ShooterSubsystem();
-
-
-    // Indexer Pivot
-    // this.m_indexerPivot = new IndexerPivot();
 
     configureBindings();
   }
@@ -100,16 +93,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return Commands.repeatingSequence(
-    //   new SetIndexerPivotAngle(m_indexerPivot, Degrees.of(0)),
-    //   Commands.waitSeconds(0.5),
-    //   new SetIndexerPivotAngle(m_indexerPivot, Degrees.of(-90)),
-    //   Commands.waitSeconds(0.5),
-    //   new SetIndexerPivotAngle(m_indexerPivot, Degrees.of(90)),
-    //   Commands.waitSeconds(0.5),
-    //   new SetIndexerPivotAngle(m_indexerPivot, Degrees.of(0)),
-    //   Commands.waitSeconds(0.5)
-    // );
     return null;
   }
 }

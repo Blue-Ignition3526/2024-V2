@@ -45,10 +45,7 @@ public final class Constants {
     //Motion (PID and Constraints)
     // TODO: add the correct maxVelocity and maxAcceleration
     public static final Constraints kElevatorConstraints = new Constraints(26, 35);
-
-    public static final double kElevatorP = 0.1;
-    public static final double kElevatorI = 0.0;
-    public static final double kElevatorD = 0.0;
+    public static final ProfiledPIDController kElevatorPIDController = new ProfiledPIDController(0.1, 0, 0, kElevatorConstraints);
 
     //Bounds in inches
     public static final double kupperBound = 8.0;
