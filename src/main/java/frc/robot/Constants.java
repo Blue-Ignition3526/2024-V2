@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -32,6 +33,55 @@ import lib.BlueShift.math.InterpolatingTable;
 import lib.BlueShift.utils.SwerveChassis;
 
 public final class Constants {
+
+  public static class Elevator {
+    //Motors Id
+    public static final int kleftElevatorMotorId = 2;
+    public static final int krightElevatorMotorId = 3;
+
+    //Values of Concersions
+    public static final double kradiansToInches = 1.897; 
+
+    //Motion (PID and Constraints)
+    // TODO: add the correct maxVelocity and maxAcceleration
+    public static final Constraints kElevatorConstraints = new Constraints(26, 35);
+
+    public static final double kElevatorP = 0.1;
+    public static final double kElevatorI = 0.0;
+    public static final double kElevatorD = 0.0;
+
+    //Bounds in inches
+    public static final double kupperBound = 8.0;
+    public static final double kmediumBound = 5.0;
+    public static final double klowerBound = 0.0;
+
+    public enum ElevatorPosition {
+      HIGH("High", 8.0),
+      MEDIUM("Medium", 5.0 ),
+      LOW("Low", 0.0);
+
+      private final String name;
+      private final double position;
+
+      ElevatorPosition(String name, double position){
+        this.name = name;
+        this.position = position;
+      }
+
+      public String getName(){
+        return name;
+      }
+
+      public double getPosition(){
+        return position;
+      }
+    }
+
+    //Speeds
+    public static final double kspeedUp = 0.3;
+    public static final double kspeedDown = -0.3;
+    public static final double kspeedInPlace = 0.05;
+  }
   public static class Intake {
     // * Speeds
     public static final double kInSpeed = 0.8d;
