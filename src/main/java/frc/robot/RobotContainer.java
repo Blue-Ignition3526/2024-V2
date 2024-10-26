@@ -1,8 +1,6 @@
 package frc.robot;
 
 import frc.robot.Constants.Elevator;
-import frc.robot.commands.Elevator.HighHeight;
-import frc.robot.commands.Elevator.LowHeight;
 import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.SwerveDrive.DriveSwerve;

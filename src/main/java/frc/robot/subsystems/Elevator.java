@@ -8,9 +8,11 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import edu.wpi.first.math.controller.PIDController;
+import frc.robot.Constants.Elevator.ElevatorPosition;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 
 
 public class Elevator extends SubsystemBase {
@@ -20,51 +22,46 @@ public class Elevator extends SubsystemBase {
 
     private final RelativeEncoder encoder;
 
-    private final PIDController elevatorPID;
+    private final ProfiledPIDController elevatorPID;
 
-    // TODO: Cambiarlo al verdadero valor
-    private final double radiansTometers = 1.0; // How many rotations are how many inches in height 
-    
+    private final double radiansToInches;
+
     // Constructor
     public Elevator () {
         this.leftElevatorMotor = new CANSparkFlex(Constants.Elevator.kleftElevatorMotorId, MotorType.kBrushless);
         this.rightElevatorMotor = new CANSparkFlex(Constants.Elevator.krightElevatorMotorId, MotorType.kBrushless);
 
-        rightElevatorMotor.follow(leftElevatorMotor);
+        rightElevatorMotor.setInverted(true);
 
-        this.encoder = leftElevatorMotor.getEncoder();
+        leftElevatorMotor.follow(rightElevatorMotor);
 
-        this.elevatorPID = new PIDController(Constants.Elevator.kElevatorP, Constants.Elevator.kElevatorI, Constants.Elevator.kElevatorD);
+        this.encoder = rightElevatorMotor.getEncoder();
 
+        this.elevatorPID = new ProfiledPIDController(Constants.Elevator.kElevatorP, Constants.Elevator.kElevatorI, Constants.Elevator.kElevatorD, Constants.Elevator.kElevatorConstraints);
+
+        this.radiansToInches = Constants.Elevator.kradiansToInches; // How many rotations are how many inches in height 
+    
     }
 
     public void setSpeed(double speed) {
-        leftElevatorMotor.set(speed);
+        rightElevatorMotor.set(speed);
     }   
 
-    public void moveUp() {
-        setSpeed(Constants.Elevator.kspeedUp);
-    }
-
-    public void moveDown() {
-        setSpeed(Constants.Elevator.kspeedDown);
-    }
-
-    public void keepInPlace() {
-        setSpeed(Constants.Elevator.kspeedInPlace);
-    }
-
     public void setPosition(double position){
-        setSpeed(elevatorPID.calculate(position, getPosition()));
+        setSpeed(elevatorPID.calculate(getPosition(), position));
     }
 
     public double getPosition () {
-        return (2*Math.PI/encoder.getPosition()) * radiansTometers;
+        return (2*Math.PI/encoder.getPosition()) * radiansToInches;
     }
 
 
     public void stopElevator() {
         setSpeed(0.0);
+    }
+
+    public Command setPositionCommand(ElevatorPosition position) {
+        return run(()-> setPosition(position.getPosition())).until(()->Math.abs(position.getPosition()-getPosition())<0.5);
     }
 
     @Override
