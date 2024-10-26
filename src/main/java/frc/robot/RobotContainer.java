@@ -1,11 +1,6 @@
 package frc.robot;
 
 import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
-import frc.robot.commands.Indexer.Rollers.IndexerFullIn;
-import frc.robot.commands.Indexer.Rollers.IndexerFullOut;
-import frc.robot.commands.Indexer.Rollers.IndexerInReceive;
-import frc.robot.commands.Indexer.Rollers.IndexerPassToShooter;
-import frc.robot.commands.Indexer.Rollers.IndexerRetain;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.IntakeOut;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
@@ -48,8 +43,6 @@ public class RobotContainer {
   // * Indexer Pivot
   private final IndexerPivot m_indexerPivot;
 
-  // * 
-  private final IndexerRollers m_indexerRollers;
 
   public RobotContainer() {
     // // Gyro
@@ -70,8 +63,6 @@ public class RobotContainer {
     // Indexer Pivot
     this.m_indexerPivot = new IndexerPivot();
 
-    //Indexer Rollers
-    this.m_indexerRollers = new IndexerRollers();
 
     configureBindings();
   }
@@ -88,16 +79,6 @@ public class RobotContainer {
     // );
 
     this.m_intake.setDefaultCommand(new IntakeIn(m_intake));
-    
-    //IndexerRollers
-    controller.leftBumper().whileTrue(new IndexerFullOut());
-    controller.rightBumper().whileTrue(new IndexerFullIn());
-
-    controller.rightTrigger().whileTrue(new IndexerInReceive());
-    controller.rightTrigger().whileTrue(new IndexerPassToShooter());
-
-    controller.leftTrigger().whileTrue(new IndexerRetain());
-
   }
 
   public Command getAutonomousCommand() {

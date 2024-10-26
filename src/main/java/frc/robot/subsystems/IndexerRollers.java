@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants;
@@ -55,10 +56,6 @@ public class IndexerRollers extends SubsystemBase {
         return !this.pieceSwitchMiddle.get() && pieceSwitchMiddleEnabled; // regresa lo contrario del valor que el sensor te de (que es si el intake tiene la pieza en base a lo que te dice el sensor) y abilitas o tomas en cuenta el sensor del middle, no lo ignoras
     }
 
-     public boolean hasPieceRetained() { // metodo para cuando tenga la pieza en medio
-        return hasPieceIn() && hasPieceMiddle(); // regresa si tiene la pieza detectada por los dos sensores
-    }
-
     // * Speed setters
     public void setRollersSpeed(double speed) { // metodo para establecer la velocidad de los primeros rollers
         this.isRolling = speed > 0; // si la velocidad es positiva significa que esta agarrando pieza
@@ -70,6 +67,22 @@ public class IndexerRollers extends SubsystemBase {
         this.setRollersSpeed(0); // establece la velocidad en 0
     }
 
+    public Command setRollersInCommand(){
+        return run(()->setRollersSpeed(Constants.Indexer.Rollers.krollersInReceivingSpeed));
+    }
+
+    public Command setRollersOutCommand(){
+        return run(()->setRollersSpeed(Constants.Indexer.Rollers.krollersInExpulsingSpeed));
+    }
+
+    public Command setRollersPassCommand(){
+        return run(()->setRollersSpeed(Constants.Indexer.Rollers.krollersInPassSpeed));
+    }
+
+    public Command stopRollersCommand(){
+        return run(()->stop());
+    }
+    
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("RollersIn/Indexing", this.hasPieceIn()); // aparece en la dashboard si el index in tiene la pieza
