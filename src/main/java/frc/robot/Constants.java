@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 
@@ -33,15 +34,13 @@ import lib.BlueShift.utils.SwerveChassis;
 public final class Constants {
   public static class Intake {
     // * Speeds
-    // TODO: Check speeds
-    public static final double kInSpeed = 0.75d;
+    public static final double kInSpeed = 0.8d;
     public static final double kOutSpeed = -0.3d;
     public static final double kAvoidSpeed = -0.05d;
 
     // * Motor
-    // TODO: Set motor ID
     public static final int kMotorId = 5;
-    public static final int kMotorMaxCurrent = 40;
+    public static final int kMotorMaxCurrent = 60;
   }
 
   // * Shooter
@@ -57,8 +56,10 @@ public final class Constants {
     public static final double lowerSpeed = 0;
     public static final double finalLowerSpeed = 0;
     public static final double finalUpperSpeed = 0;
+
+    public static final Measure<Velocity<Angle>> kShooterIdleSpeed = RPM.of(10);
+
     public static final InterpolatingTable kShooterSpeed = new InterpolatingTable(new double[][] {
-      
       // <distance (meters)>, <speed (RPM)>
       {0, 80},
       {2, 160},
@@ -183,7 +184,7 @@ public final class Constants {
 
             // * Robot Without bumpers measures
             public static final Measure<Distance> kTrackWidth = Inches.of(26);
-            public static final Measure<Distance> kWheelBase = Inches.of(26);
+            public static final Measure<Distance> kWheelBase = Inches.of(30.5);
     
             // * Create a kinematics instance with the positions of the swerve modules
             public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(SwerveChassis.sizeToModulePositions(kTrackWidth.in(Meters), kWheelBase.in(Meters)));
@@ -218,6 +219,7 @@ public final class Constants {
                 .setTurningMotorID(25)
                 .setTurningMotorInverted(true)
                 .setName("Back Left");
+
 
             public static final SwerveModuleOptions kBackRightOptions = new SwerveModuleOptions()
                 .setAbsoluteEncoderInverted(false)

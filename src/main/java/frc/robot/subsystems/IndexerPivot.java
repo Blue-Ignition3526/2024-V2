@@ -1,12 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,21 +24,34 @@ public class IndexerPivot extends SubsystemBase {
   // Motor
   private final LazyCANSparkMax m_pivotMotor;
 
-  // Control
+  // Setpoint
   private Measure<Angle> m_setpoint;
+
+  // Logging
+  DoubleLogEntry m_currentAngleLog;
+  DoubleLogEntry m_setpointAngleLog;
+  DoubleLogEntry m_setVoltageLog;
+  DoubleLogEntry m_setpointErrorLog;
 
   public IndexerPivot() {
     // Encoder
     this.indexerEncoder = new DutyCycleEncoder(Constants.Indexer.Pivot.kIndexerPivotEncoderPort);
     this.indexerEncoder.setPositionOffset(Constants.Indexer.Pivot.kIndexerPivotEncoderOffset.in(Rotation));
     
-    // Reset setpoint
-    this.m_setpoint = getAngle();
-    
     // Motor
     this.m_pivotMotor = new LazyCANSparkMax(Constants.Indexer.Pivot.kIndexerPivotMotorId, MotorType.kBrushless);
     this.m_pivotMotor.setIdleMode(IdleMode.kBrake);
     this.m_pivotMotor.setSmartCurrentLimit(Constants.Indexer.Pivot.kIndexerPivotMotorMaxCurrent);
+
+    // Reset setpoint
+    this.m_setpoint = getAngle();
+
+    // Logging
+    DataLog dataLog = DataLogManager.getLog();
+    m_currentAngleLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/CurrentAngle");
+    m_setpointAngleLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetpointAngle");
+    m_setVoltageLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetVoltage");
+    m_setpointErrorLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetpointError");
 
     // Control
     SmartDashboard.putData("Indexer/Pivot/PIDController", Constants.Indexer.Pivot.kIndexerPivotPIDController);
@@ -120,5 +132,12 @@ public class IndexerPivot extends SubsystemBase {
     SmartDashboard.putNumber("Indexer/Pivot/SetpointAngle", setpointAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetVoltage", setVoltage);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError());
+    SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", atSetpoint());
+
+    // Update logging
+    m_currentAngleLog.append(currentAngle);
+    m_setpointAngleLog.append(setpointAngle);
+    m_setVoltageLog.append(setVoltage);
+    m_setpointErrorLog.append(getSetpointError());
   }
 }

@@ -1,25 +1,16 @@
 package frc.robot;
 
-import frc.robot.commands.Indexer.Pivot.SetIndexerPivotAngle;
-import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
-import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Gyro.Gyro;
 import frc.robot.subsystems.Gyro.GyroIOPigeon;
 import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.CustomController.CustomControllerType;
-
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
   // * Controller
@@ -79,17 +70,19 @@ public class RobotContainer {
   private void configureBindings() {
     this.m_swerveDrive.setDefaultCommand(new DriveSwerve(
         m_swerveDrive,
-        () -> m_controller.getLeftX(),
         () -> -m_controller.getLeftY(),
+        () -> -m_controller.getLeftX(),
         () -> -m_controller.getRightX(),
         () -> true,
         () -> false
       )
     );
 
-    this.m_controller.bottomButton().toggleOnTrue(new IntakeIn(m_intake));
+    this.m_controller.rightStickButton().onTrue(new InstantCommand(() -> m_swerveDrive.zeroHeading()));
 
-    // this.m_intake.setDefaultCommand(new IntakeIn(m_intake));
+    this.m_controller.bottomButton().toggleOnTrue(m_intake.setIn());
+    this.m_controller.rightButton().whileTrue(m_intake.setOut());
+    this.m_intake.setDefaultCommand(m_intake.setAvoid());
   }
 
   public Command getAutonomousCommand() {
