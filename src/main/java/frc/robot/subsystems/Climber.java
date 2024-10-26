@@ -35,6 +35,10 @@ public class Climber extends SubsystemBase {
         this.climberEncoder.setPositionConversionFactor(Constants.Climber.kclimberEncoder_RotationToInches); 
         this.climberEncoder.setVelocityConversionFactor(Constants.Climber.kclimberEncoder_RPMToInchesPerSecond);
 
+        // coast just for debugging
+        rightClimberMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        leftClimberMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+
     }
     
     //TODO: A base de posiciones
@@ -55,6 +59,10 @@ public class Climber extends SubsystemBase {
     public double getCurrent() {
         return rightClimberMotor.getOutputCurrent();
     }
+
+    /*public Command setClimberPosition(double position) {
+        return new run(() -> setPosition(position), this);
+    } */
 
     @Override
     public void periodic(){

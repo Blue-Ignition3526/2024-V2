@@ -42,10 +42,10 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         // * Upper Roller
         // Motor
-        this.upperRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kUpperRollerID, MotorType.kBrushless);
+        this.upperRoller = new LazyCANSparkFlex(Constants.Shooter.kUpperRollerID, MotorType.kBrushless);
         this.upperRoller.setIdleMode(IdleMode.kCoast);
-        this.upperRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.UpperSmartCurrentLimit);
-        this.upperRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.UpperClosedLoopRampRate);
+        this.upperRoller.setSmartCurrentLimit(Constants.Shooter.UpperSmartCurrentLimit);
+        this.upperRoller.setClosedLoopRampRate(Constants.Shooter.UpperClosedLoopRampRate);
         this.upperRoller.setInverted(true);
 
         // PID
@@ -56,10 +56,10 @@ public class Shooter extends SubsystemBase {
 
         // * Lower Roller
         // Motor
-        this.lowerRoller = new LazyCANSparkFlex(Constants.ShooterSubsystem.kLowerRollerID, MotorType.kBrushless);
+        this.lowerRoller = new LazyCANSparkFlex(Constants.Shooter.kLowerRollerID, MotorType.kBrushless);
         this.lowerRoller.setIdleMode(IdleMode.kCoast);
-        this.lowerRoller.setSmartCurrentLimit(Constants.ShooterSubsystem.LowerSmartCurrentLimit);
-        this.lowerRoller.setClosedLoopRampRate(Constants.ShooterSubsystem.lowerClosedLoopRampRate);
+        this.lowerRoller.setSmartCurrentLimit(Constants.Shooter.LowerSmartCurrentLimit);
+        this.lowerRoller.setClosedLoopRampRate(Constants.Shooter.lowerClosedLoopRampRate);
 
         // PID
         this.lowerRollerPID  = new LazySparkPID(lowerRoller);
@@ -111,7 +111,7 @@ public class Shooter extends SubsystemBase {
      * @return
      */
     public boolean upperRollerAtSetpoint() {
-        return Math.abs(getUpperRollerSetpointError()) <= Constants.ShooterSubsystem.kVelocityToleranceRPM;
+        return Math.abs(getUpperRollerSetpointError()) <= Constants.Shooter.kVelocityToleranceRPM;
     }
 
     /**
@@ -119,7 +119,7 @@ public class Shooter extends SubsystemBase {
      * @return
      */
     public boolean lowerRollerAtSetpoint() {
-        return Math.abs(getLowerRollerSetpointError()) <= Constants.ShooterSubsystem.kVelocityToleranceRPM;
+        return Math.abs(getLowerRollerSetpointError()) <= Constants.Shooter.kVelocityToleranceRPM;
     }
 
     /**
@@ -170,7 +170,7 @@ public class Shooter extends SubsystemBase {
      * @return
      */
     public Command setIdleCommand() {
-        return run(() -> setVelocity(Constants.ShooterSubsystem.kShooterIdleSpeed)).until(() -> atSetpoint());
+        return run(() -> setVelocity(Constants.Shooter.kShooterIdleSpeed)).until(() -> atSetpoint());
     }
 
     @Override
