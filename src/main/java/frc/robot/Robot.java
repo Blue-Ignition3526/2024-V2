@@ -13,10 +13,12 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import lib.BlueShift.control.Buzzer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -28,6 +30,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private static final PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
+  private static final Buzzer buzzer = new Buzzer(9);
 
   @Override
   public void robotInit() {
@@ -55,6 +58,13 @@ public class Robot extends TimedRobot {
 
     // * Verify PDP
     pdp.getVersion();
+
+    // * Beep
+    buzzer.playTone(440, 0.1);
+    Timer.delay(0.05);
+    buzzer.playTone(440, 0.1);
+    Timer.delay(0.05);
+    buzzer.playTone(440, 0.1);
   }
 
   @Override

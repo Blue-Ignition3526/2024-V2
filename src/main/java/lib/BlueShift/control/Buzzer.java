@@ -16,18 +16,21 @@ public class Buzzer {
         this.buzzer = new DigitalOutput(channel);
     }
 
-    public void playTone(double frequency, double duration) {
+    public void playTone(double frequency) {
         halfPeriod = 1.0 / (2.0 * frequency);
         toneNotifier = new Notifier(() -> toggleBuzzer());
 
         toneNotifier.startPeriodic(halfPeriod);
+    }
 
+    public void playTone(double frequency, double duration) {
+        playTone(frequency);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 stopTone();
             }
-        }, (long)(duration * 1000));
+        }, (long) (duration * 1000));
     }
 
     private void toggleBuzzer() {
