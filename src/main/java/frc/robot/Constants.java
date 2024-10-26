@@ -20,7 +20,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -81,51 +81,19 @@ public final class Constants {
   }
   public static class Intake {
     // * Speeds
-    public static final double kInSpeed = 0.8d;
-    public static final double kOutSpeed = -0.3d;
-    public static final double kAvoidSpeed = -0.05d;
+    // TODO: Check speeds
+    public static final double kInSpeed = -0.5d;
+    public static final double kOutSpeed = 0.5d;
+    public static final double kAvoidSpeed = 0.05d;
 
     // * Motor
     public static final int kMotorId = 5;
-    public static final int kMotorMaxCurrent = 60;
+    public static final int kMotorMaxCurrent = 10;
+
+    // * Beam Break
+    public static final int kBeamBreakPort = 0;
   }
 
-  // * Shooter
-  // TODO: subir limit (listo creo)
-  // TODO: Check speeds
-  // TODO: Check angles
-  // TODO: Set motor IDs
-  
-  public static final class ShooterSubsystem {
-    public static final int kUpperRollerID = 1;
-    public static final int kLowerRollerID = 2;
-    public static final double upperSpeed = 0;
-    public static final double lowerSpeed = 0;
-    public static final double finalLowerSpeed = 0;
-    public static final double finalUpperSpeed = 0;
-
-    public static final Measure<Velocity<Angle>> kShooterIdleSpeed = RPM.of(10);
-
-    public static final InterpolatingTable kShooterSpeed = new InterpolatingTable(new double[][] {
-      // <distance (meters)>, <speed (RPM)>
-      {0, 80},
-      {2, 160},
-    });
-
-    public static final InterpolatingTable kIndexerAngle = new InterpolatingTable(new double[][] {
-      // <distance (meters)>, <angle (degrees)>
-      {0, 0},
-      {2, 15},
-    });
-    public static final int UpperSmartCurrentLimit = 40; // voltage limit of upper roller
-    public static final double UpperClosedLoopRampRate  = 0.15; // velocity from 0 to 100 upprt roller
-    public static final int LowerSmartCurrentLimit = 40; //voltage limit from lower roller
-    public static final double lowerClosedLoopRampRate = 0.15; // velocity from 0 to 100 lower roller
-
-    public static final double kVelocityToleranceRPM = 10;
-  }
-
-  // indexer
   public static final class Indexer {
     public static final class Pivot {
       // * Encoder
@@ -142,7 +110,7 @@ public final class Constants {
   
       // * Control
       // TODO: Check values
-      public static final TrapezoidProfile.Constraints kIndexerPivotConstraints = new TrapezoidProfile.Constraints(500, 500);
+      public static final Constraints kIndexerPivotConstraints = new Constraints(500, 500);
       public static final ProfiledPIDController kIndexerPivotPIDController = new ProfiledPIDController(0.15, 0, 0, kIndexerPivotConstraints);
       public static final Measure<Angle> kIndexerPivotTolerance = Degrees.of(1);
     }
@@ -276,5 +244,32 @@ public final class Constants {
                 .setTurningMotorInverted(true)
                 .setName("Back Right");
         }
+    }
+      // * CLIMBER
+      public static final class Climber {
+        // Climber motor config
+        public static final double kclimberMotorGearRatio = 1.0 / 16; // 16:1 climber
+        public static final Measure<Distance> kSprocketDiameter = Inches.of(1.16);
+        public static final double kclimberEncoder_RotationToInches = kclimberMotorGearRatio * (kSprocketDiameter.baseUnitMagnitude()) * Math.PI;
+        public static final double kclimberEncoder_RPMToInchesPerSecond = kclimberEncoder_RotationToInches / 60.0;
+        
+
+        public static final int kLeftClimberMotorID = 33;
+        public static final int kRightClimberMotorID = 32;
+
+        // Climber speed
+        public static final double kClimberUpSpeed = 0.9;
+        public static final double kClimberDownSpeed = -0.75;
+
+        // Max current (Used for reseting the climber)
+        public static final double kMaxCurrent = 20;
+
+        //Climers ID
+        public static final int leftClimberMotorID = 30;
+        public static final int rightClimberMotorID = 31;
+
+        public static final Constraints kclimberConstraints = new Constraints(36, 20);
+        public static final ProfiledPIDController kclimberPIDController = new ProfiledPIDController(2.5, 0.0, 0.0, kclimberConstraints);
+   
     }
 }
