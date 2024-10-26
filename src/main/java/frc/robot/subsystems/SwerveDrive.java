@@ -1,15 +1,28 @@
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.subsystems.Gyro.Gyro;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 public class SwerveDrive extends SubsystemBase {
@@ -21,6 +34,9 @@ public class SwerveDrive extends SubsystemBase {
 
     // * Gyro
     Gyro gyro;
+
+    // * Odometry
+    SwerveDrivePoseEstimator odometry;
 
     // * Speed stats
     boolean drivingRobotRelative = false;
@@ -41,34 +57,7 @@ public class SwerveDrive extends SubsystemBase {
         
         // Reset gyro
         this.gyro.reset();
-
-        // Configure Auto Builder
-        // this.configureAutoBuilder();
     }
-
-    /**
-     * Configure the auto builder for PathPlanner
-     */
-    // public void configureAutoBuilder() {
-    //     AutoBuilder.configureHolonomic(
-    //         this::getPose,
-    //         this::resetOdometry,
-    //         this::getRobotRelativeChassisSpeeds,
-    //         this::driveRobotRelative,
-    //         new HolonomicPathFollowerConfig(
-    //             Constants.SwerveDrive.Autonomous.kTranslatePIDConstants,
-    //             Constants.SwerveDrive.Autonomous.kRotatePIDConstants,
-    //             Constants.SwerveDrive.Autonomous.kMaxSpeedMetersPerSecond.in(MetersPerSecond),
-    //             Constants.SwerveDrive.PhysicalModel.kWheelBase.in(Meters) / 2,
-    //             new ReplanningConfig(true, true)
-    //         ),
-    //         () -> {
-    //             if (DriverStation.getAlliance().isPresent()) return DriverStation.getAlliance().get() == Alliance.Red;
-    //             return false;
-    //         },
-    //         this
-    //     );
-    // }
 
     /**
      * Get the current heading of the robot
@@ -85,27 +74,19 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Get the current pose of the robot
-     * @return
-     */
-    // public Pose2d getPose() {
-    //     return odometry.getEstimatedPosition();
-    // }
-
-    /**
      * Reset the pose of the robot to (0, 0)
      */
-    // public void resetPose() {
-    //     resetOdometry(new Pose2d());
-    // }
+    public void resetPose() {
+        resetOdometry(new Pose2d());
+    }
 
     /**
      * Reset the pose of the robot to the provided pose
      * @param pose
      */
-    // public void resetOdometry(Pose2d pose) {
-    //     odometry.resetPosition(this.getHeading(), getModulePositions(), pose);
-    // }
+    public void resetOdometry(Pose2d pose) {
+        odometry.resetPosition(this.getHeading(), getModulePositions(), pose);
+    }
 
     public ChassisSpeeds getRobotRelativeChassisSpeeds() {
         if (this.drivingRobotRelative) return this.speeds;
@@ -146,6 +127,7 @@ public class SwerveDrive extends SubsystemBase {
         return new SwerveModulePosition[]{
             frontLeft.getPosition(),
             frontRight.getPosition(),
+
             backLeft.getPosition(),
             backRight.getPosition(),
         };
@@ -176,7 +158,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     /**
-     * Drive the robot with the provided speeds <b>(FIELD RELATIVE)</b>
+     * Drive the robot with the provided speeds <b>(ROBOT RELATIVE)</b>
      * @param xSpeed
      * @param ySpeed
      * @param rotSpeed
@@ -264,12 +246,9 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void periodic() {
-        // Update the field
-        // m_field.setRobotPose(this.getPose());
-
         // Log data
-        // SmartDashboard.putData("SwerveDrive/Field", this.m_field);
-        // SmartDashboard.putNumber("SwerveDrive/RobotHeadingRad", this.getHeading().getRadians());
+        SmartDashboard.putData("SwerveDrive/Field", this.m_field);
+        SmartDashboard.putNumber("SwerveDrive/RobotHeadingRad", this.getHeading().getRadians());
         SmartDashboard.putNumber("SwerveDrive/RobotHeadingDeg", this.getHeading().getDegrees());
         SmartDashboard.putBoolean("SwerveDrive/RobotRelative", this.drivingRobotRelative);
         // Logger.recordOutput("SwerveDrive/RobotSpeeds", this.getRobotRelativeChassisSpeeds());

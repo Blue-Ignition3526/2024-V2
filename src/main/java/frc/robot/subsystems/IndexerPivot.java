@@ -1,12 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,13 +24,14 @@ public class IndexerPivot extends SubsystemBase {
   // Motor
   private final LazyCANSparkMax m_pivotMotor;
 
-  // Control
-  private Measure<Angle> m_setpoint = Degrees.of(0);
+  // Setpoint
+  private Measure<Angle> m_setpoint;
 
-  // Mechanism
-  private Mechanism2d m_pivotMechanism;
-  private MechanismRoot2d m_pivotRoot;
-  private MechanismLigament2d m_pivotLigament;
+  // Logging
+  DoubleLogEntry m_currentAngleLog;
+  DoubleLogEntry m_setpointAngleLog;
+  DoubleLogEntry m_setVoltageLog;
+  DoubleLogEntry m_setpointErrorLog;
 
   public IndexerPivot() {
     // Encoder
@@ -43,16 +43,22 @@ public class IndexerPivot extends SubsystemBase {
     this.m_pivotMotor.setIdleMode(IdleMode.kBrake);
     this.m_pivotMotor.setSmartCurrentLimit(Constants.Indexer.Pivot.kIndexerPivotMotorMaxCurrent);
 
+    // Reset setpoint
+    this.m_setpoint = getAngle();
+
+    // Logging
+    DataLog dataLog = DataLogManager.getLog();
+    m_currentAngleLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/CurrentAngle");
+    m_setpointAngleLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetpointAngle");
+    m_setVoltageLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetVoltage");
+    m_setpointErrorLog = new DoubleLogEntry(dataLog, "Indexer/Pivot/SetpointError");
+
     // Control
     SmartDashboard.putData("Indexer/Pivot/PIDController", Constants.Indexer.Pivot.kIndexerPivotPIDController);
-
-    // Mechanism
-    this.m_pivotMechanism = new Mechanism2d(3, 3);
-    this.m_pivotRoot = m_pivotMechanism.getRoot("Root", 1, 2);
-    this.m_pivotLigament = new MechanismLigament2d("Pivot", 1, 0);
   }
 
   // TODO: Implement emergency home and use motor encoder if absolute encoder fails
+
   /**
    * Check if the encoder is connected
    * @return true if the encoder is connected
@@ -111,11 +117,7 @@ public class IndexerPivot extends SubsystemBase {
       // TODO: If the setpoint is not reached, apply Feedforward
       double pid = Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle);
       // double ff = Constants.Indexer.Pivot.kIndexerPivotFeedforward.calculate(pid);
-      setVoltage = MathUtil.clamp(
-        pid,
-        Constants.Indexer.Pivot.kIndexerPivotMotorMinVoltage,
-        Constants.Indexer.Pivot.kIndexerPivotMotorMaxVoltage
-      );
+      setVoltage = pid;
     } else {
       // TODO: Check for weird behaviors
       SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", true);
@@ -124,15 +126,18 @@ public class IndexerPivot extends SubsystemBase {
 
     // Update motor voltage
     m_pivotMotor.setVoltage(setVoltage);
-
-    // Update Mechanism2d
-    m_pivotLigament.setAngle(currentAngle);
     
     // Update SmartDashboard
     SmartDashboard.putNumber("Indexer/Pivot/CurrentAngle", currentAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointAngle", setpointAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetVoltage", setVoltage);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError());
-    SmartDashboard.putData("Indexer/Pivot/Mechanism", m_pivotMechanism);
+    SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", atSetpoint());
+
+    // Update logging
+    m_currentAngleLog.append(currentAngle);
+    m_setpointAngleLog.append(setpointAngle);
+    m_setVoltageLog.append(setVoltage);
+    m_setpointErrorLog.append(getSetpointError());
   }
 }
