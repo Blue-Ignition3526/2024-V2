@@ -5,6 +5,7 @@ import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.BeamBreaks;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IndexerPivot;
+import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class RobotContainer {
   // * Controller
-  private final CustomController m_controller = new CustomController(0, CustomControllerType.XBOX);
+  private final CommandXboxController controller = new CommandXboxController(0);
   
   // * Gyro
   private final Gyro m_gyro;
