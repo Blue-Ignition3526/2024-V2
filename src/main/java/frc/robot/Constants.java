@@ -202,6 +202,11 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kHeadingConstraints = new TrapezoidProfile.Constraints(100, 10);
         public static final ProfiledPIDController kHeadingController = new ProfiledPIDController(0.1, 0, 0, kHeadingConstraints);
 
+        // * Translation Controller
+        public static final Measure<Distance> kTranslationTolerance = Inches.of(1);
+        public static final TrapezoidProfile.Constraints kTranslationConstraints = new TrapezoidProfile.Constraints(100, 10);
+        public static final ProfiledPIDController kTranslationController = new ProfiledPIDController(0.1, 0, 0, kTranslationConstraints);
+
         // * Physical model of the robot
         public static final class PhysicalModel {
             // * MAX DISPLACEMENT SPEED (and acceleration)

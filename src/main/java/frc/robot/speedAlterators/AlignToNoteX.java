@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import lib.BlueShift.control.SpeedAlterator;
 
@@ -30,11 +31,11 @@ public class AlignToNoteX extends SpeedAlterator {
         LimelightHelpers.setPipelineIndex(limelightName, lastPipelineIndex);
     }
 
-    // TODO: CHECK LOGIC
     @Override
     public ChassisSpeeds alterSpeed(ChassisSpeeds speeds, boolean robotRelative) {
-        ChassisSpeeds robotRelativeChassisSpeeds = robotRelative ? speeds : ChassisSpeeds.fromFieldRelativeSpeeds(speeds, headingSupplier.get());
-        
-        return speeds;
+        ChassisSpeeds modifiedSpeeds = robotRelative ? speeds : ChassisSpeeds.fromFieldRelativeSpeeds(speeds, headingSupplier.get());
+        double xOffsetDeg = LimelightHelpers.getTX(limelightName);
+        modifiedSpeeds.vxMetersPerSecond = Constants.SwerveDrive.kTranslationController.calculate(xOffsetDeg, 0);
+        return modifiedSpeeds;
     }
 }

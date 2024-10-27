@@ -17,7 +17,7 @@ public class Climber extends SubsystemBase {
     private final LazyCANSparkMax leftClimberMotor;
     private final RelativeEncoder climberEncoder;
     private final ProfiledPIDController climberMotorPID;  
-    private double climberSetPoint;  
+    private double climberSetPoint;
 
     public Climber(){
         this.leftClimberMotor = new LazyCANSparkMax(Constants.Climber.leftClimberMotorID, MotorType.kBrushless);
