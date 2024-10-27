@@ -65,50 +65,26 @@ public final class Constants {
   }
 
   public static class Elevator {
-    //Motors Id
-    public static final int kleftElevatorMotorId = 2;
-    public static final int krightElevatorMotorId = 3;
+    // Motors Id
+    public static final int kLeftElevatorMotorId = 2;
+    public static final int kRightElevatorMotorId = 3;
 
-    //Values of Concersions
-    public static final double kradiansToInches = 1.897; 
+    // Conversion
+    public static final double kRadiansToInches = 1.897; 
 
-    //Motion (PID and Constraints)
-    // TODO: add the correct maxVelocity and maxAcceleration
+    // Motion (PID and Constraints)
     public static final Constraints kElevatorConstraints = new Constraints(26, 35);
     public static final ProfiledPIDController kElevatorPIDController = new ProfiledPIDController(0.1, 0, 0, kElevatorConstraints);
 
-    //Bounds in inches
-    public static final double kupperBound = 8.0;
-    public static final double kmediumBound = 5.0;
-    public static final double klowerBound = 0.0;
+    // Bounds in inches
+    public static final double kUpperBound = 8.0;
+    public static final double kMediumBound = 5.0;
+    public static final double kLowerBound = 0.0;
 
-    public enum ElevatorPosition {
-      HIGH("High", 8.0),
-      MEDIUM("Medium", 5.0 ),
-      LOW("Low", 0.0);
-
-      private final String name;
-      private final double position;
-
-      ElevatorPosition(String name, double position){
-        this.name = name;
-        this.position = position;
-      }
-
-      public String getName(){
-        return name;
-      }
-
-      public double getPosition(){
-        return position;
-      }
-    }
-
-    //Speeds
-    public static final double kspeedUp = 0.3;
-    public static final double kspeedDown = -0.3;
-    public static final double kspeedInPlace = 0.05;
+    // Tolerance
+    public static final Measure<Distance> kElevatorTolerance = Inches.of(0.1);
   }
+
   public static class Intake {
     // * Speeds
     // TODO: Check speeds

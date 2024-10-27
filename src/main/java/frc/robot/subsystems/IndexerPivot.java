@@ -10,10 +10,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.BlueShift.control.motor.LazyCANSparkMax;
-
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotation;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -46,6 +44,9 @@ public class IndexerPivot extends SubsystemBase {
 
     // Reset setpoint
     this.m_setpoint = getAngle();
+
+    // Reset PID controller
+    Constants.Indexer.Pivot.kIndexerPivotPIDController.reset(getAngle().in(Degrees));
 
     // Logging
     DataLog dataLog = DataLogManager.getLog();
@@ -88,10 +89,10 @@ public class IndexerPivot extends SubsystemBase {
 
   /**
    * Get the setpoint angle for the indexer pivot
-   * @return the setpoint angle
+   * @return the setpoint error
    */
-  public double getSetpointError() {
-    return getAngle().in(Degrees) - m_setpoint.in(Degrees);
+  public Measure<Angle> getSetpointError() {
+    return m_setpoint.minus(getAngle());
   }
 
   /**
@@ -99,12 +100,17 @@ public class IndexerPivot extends SubsystemBase {
    * @return true if the indexer pivot is at the setpoint
    */
   public boolean atSetpoint() {
-    return Math.abs(getSetpointError()) < Constants.Indexer.Pivot.kIndexerPivotTolerance.in(Degrees);
+    return Math.abs(getSetpointError().in(Degrees)) < Constants.Indexer.Pivot.kIndexerPivotTolerance.in(Degrees);
   }
 
-  public boolean isPivotAtShooterAngle() {
-    return atSetpoint();  
-}
+  /**
+   * Stop the indexer pivot
+   */
+  public void stop() {
+    m_pivotMotor.set(0);
+  }
+
+  // TODO: Commands
 
   @Override
   public void periodic() {
@@ -118,14 +124,12 @@ public class IndexerPivot extends SubsystemBase {
     // Calculate set voltage
     double setVoltage = 0;
     if (!atSetpoint()) {
-      SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", false);
       // TODO: If the setpoint is not reached, apply Feedforward
       double pid = Constants.Indexer.Pivot.kIndexerPivotPIDController.calculate(currentAngle, setpointAngle);
       // double ff = Constants.Indexer.Pivot.kIndexerPivotFeedforward.calculate(pid);
       setVoltage = pid;
     } else {
       // TODO: Check for weird behaviors
-      SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", true);
       setVoltage = 0;
     }
 
@@ -136,13 +140,13 @@ public class IndexerPivot extends SubsystemBase {
     SmartDashboard.putNumber("Indexer/Pivot/CurrentAngle", currentAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetpointAngle", setpointAngle);
     SmartDashboard.putNumber("Indexer/Pivot/SetVoltage", setVoltage);
-    SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError());
+    SmartDashboard.putNumber("Indexer/Pivot/SetpointError", getSetpointError().in(Degrees));
     SmartDashboard.putBoolean("Indexer/Pivot/AtSetpoint", atSetpoint());
 
     // Update logging
     m_currentAngleLog.append(currentAngle);
     m_setpointAngleLog.append(setpointAngle);
     m_setVoltageLog.append(setVoltage);
-    m_setpointErrorLog.append(getSetpointError());
+    m_setpointErrorLog.append(getSetpointError().in(Degrees));
   }
 }

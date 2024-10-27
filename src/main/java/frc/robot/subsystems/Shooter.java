@@ -13,6 +13,7 @@ import lib.BlueShift.control.motor.LazyCANSparkFlex;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -38,6 +39,7 @@ public class Shooter extends SubsystemBase {
     DoubleLogEntry upperRollerVelocityLog;
     DoubleLogEntry lowerRollerVelocityLog;
     DoubleLogEntry setpointVelocityLog;
+    BooleanLogEntry atSetpointLog;
 
     public Shooter() {
         // * Upper Roller
@@ -72,6 +74,7 @@ public class Shooter extends SubsystemBase {
         this.upperRollerVelocityLog = new DoubleLogEntry(dataLog, "Shooter/UpperRollerVelocity");
         this.lowerRollerVelocityLog = new DoubleLogEntry(dataLog, "Shooter/LowerRollerVelocity");
         this.setpointVelocityLog = new DoubleLogEntry(dataLog, "Shooter/SetpointVelocity");
+        this.atSetpointLog = new BooleanLogEntry(dataLog, "Shooter/AtSetpoint");
     }
 
     /**
@@ -136,8 +139,8 @@ public class Shooter extends SubsystemBase {
      */
     public void setVelocity(Measure<Velocity<Angle>> rpm) {
         this.velocitySetpoint = rpm;
-        upperRollerPID.setReference(velocitySetpoint.in(RPM), ControlType.kVelocity);
-        lowerRollerPID.setReference(velocitySetpoint.in(RPM), ControlType.kVelocity);
+        upperRollerPID.setReference(velocitySetpoint.in(RPM), ControlType.kSmartVelocity);
+        lowerRollerPID.setReference(velocitySetpoint.in(RPM), ControlType.kSmartVelocity);
     }
 
     /**
@@ -175,6 +178,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // * Logging
         SmartDashboard.putNumber("Shooter/UpperRollerVelocity", getUpperRollerVelocity());
         SmartDashboard.putNumber("Shooter/LowerRollerVelocity", getLowerRollerVelocity());
         SmartDashboard.putNumber("Shooter/Setpoint", velocitySetpoint.in(RPM));
@@ -183,5 +187,6 @@ public class Shooter extends SubsystemBase {
         upperRollerVelocityLog.append(getUpperRollerVelocity());
         lowerRollerVelocityLog.append(getLowerRollerVelocity());
         setpointVelocityLog.append(velocitySetpoint.in(RPM));
+        atSetpointLog.append(atSetpoint());
     }
 }
