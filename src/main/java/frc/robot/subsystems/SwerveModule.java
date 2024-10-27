@@ -51,6 +51,7 @@ public class SwerveModule extends SubsystemBase {
         this.driveMotor = new LazyCANSparkMax(options.driveMotorID, MotorType.kBrushless);
         this.turningMotor = new LazyCANSparkMax(options.turningMotorID, MotorType.kBrushless);
 
+        // TODO: checar este pedo porque no me cuadra
         this.turningMotor.setInverted(options.turningMotorInverted);
 
         // Get and configure the encoders
@@ -88,7 +89,7 @@ public class SwerveModule extends SubsystemBase {
      * @return
      */
     public Measure<Angle> getAbsoluteEncoderPosition() {
-        return Rotations.of(absoluteEncoder.getAbsolutePosition().refresh().getValue() * (this.options.absoluteEncoderInverted ? -1.0 : 1.0));
+        return Radians.of((absoluteEncoder.getAbsolutePosition().refresh().getValue() * 2 * Math.PI) * (this.options.absoluteEncoderInverted ? -1.0 : 1.0));
     }
 
     /**
@@ -184,11 +185,13 @@ public class SwerveModule extends SubsystemBase {
             this.driveEncoder.getPosition(),
             Rotation2d.fromRadians(this.getAngle().in(Radians))
         );
+
+        
     }
     
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("SwerveDrive/" + this.options.name + "/MotorEncoderDeg", this.getAngle().in(Degrees));
-        SmartDashboard.putNumber("SwerveDrive/" + this.options.name + "/AbsoluteEncoderDeg", this.getAbsoluteEncoderPosition().in(Degrees));
+        SmartDashboard.putNumber("SwerveDrive/" + this.options.name + "/MotEncoderDeg", this.getAngle().in(Degrees));
+        SmartDashboard.putNumber("SwerveDrive/" + this.options.name + "/AbsEncoderDeg", this.getAbsoluteEncoderPosition().in(Degrees));
     }
 }
