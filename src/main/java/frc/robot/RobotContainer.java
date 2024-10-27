@@ -18,11 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-//⚠⚠⚠ Fijarse en que los subsistemas queden primero ⚠⚠⚠
-
 public class RobotContainer {
   // * Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
+  private final CustomController m_controller = new CustomController(0, CustomControllerType.XBOX);
   
   // * Gyro
   private final Gyro m_gyro;
