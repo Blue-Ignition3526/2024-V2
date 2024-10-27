@@ -279,8 +279,8 @@ public final class Constants {
       public static final class Climber {
         // Climber motor config
         public static final double kclimberMotorGearRatio = 1.0 / 16; // 16:1 climber
-        public static final Measure<Distance> kSprocketDiameter = Inches.of(1.16);
-        public static final double kclimberEncoder_RotationToInches = kclimberMotorGearRatio * (kSprocketDiameter.baseUnitMagnitude()) * Math.PI;
+        public static final Measure<Distance> kSprocketDiameter = Inches.of(1.29);
+        public static final double kclimberEncoder_RotationToInches = kclimberMotorGearRatio * (kSprocketDiameter.in(Inches)) * Math.PI;
         public static final double kclimberEncoder_RPMToInchesPerSecond = kclimberEncoder_RotationToInches / 60.0;
         
 
@@ -298,8 +298,8 @@ public final class Constants {
         public static final int leftClimberMotorID = 30;
         public static final int rightClimberMotorID = 31;
 
-        public static final Constraints kclimberConstraints = new Constraints(36, 20);
-        public static final ProfiledPIDController kclimberPIDController = new ProfiledPIDController(2.5, 0.0, 0.0, kclimberConstraints);
+        public static final Constraints kclimberConstraints = new Constraints(17, 10);
+        public static final ProfiledPIDController kclimberPIDController = new ProfiledPIDController(4.2, 0.0, 0.0, kclimberConstraints);
    
     }
 }

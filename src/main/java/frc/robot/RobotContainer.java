@@ -1,7 +1,9 @@
 package frc.robot;
 
+import frc.robot.Constants.Elevator;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.BeamBreaks;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -37,14 +39,16 @@ public class RobotContainer {
   private final Intake m_intake;
 
   // * Shooter
-  private final Shooter m_shooter;
+  // private final Shooter m_shooter;
 
   // * Indexer Pivot
-  private final IndexerPivot m_indexerPivot;
+  // private final IndexerPivot m_indexerPivot;
 
   // * BeamBreaks
   private final BeamBreaks m_beamBreaks;
 
+  //* Climber 
+  private final Climber m_climber;
   public RobotContainer() {
     // Gyro
     this.m_gyro = new Gyro(new GyroIOPigeon(Constants.SwerveDrive.kGyroDevice));
@@ -62,13 +66,16 @@ public class RobotContainer {
     this.m_intake = new Intake();
 
     // Shooter
-    this.m_shooter = new Shooter();
+    // this.m_shooter = new Shooter();
 
     // Indexer Pivot
-    this.m_indexerPivot = new IndexerPivot();
+    // this.m_indexerPivot = new IndexerPivot();
 
     // BeamBreaks
     this.m_beamBreaks = new BeamBreaks();
+
+    // Climber
+    this.m_climber = new Climber();
 
     SmartDashboard.putData("ZeroHeading", new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     SmartDashboard.putData("ResetTurningEncoders", new InstantCommand(() -> m_swerveDrive.resetTurningEncoders()));
@@ -92,6 +99,9 @@ public class RobotContainer {
     this.m_controller.bottomButton().toggleOnTrue(m_intake.setIn());
     this.m_controller.rightButton().whileTrue(m_intake.setOut());
     this.m_intake.setDefaultCommand(m_intake.setAvoid());
+
+    this.m_controller.leftButton().onTrue(m_climber.setClimberPositionCommand(15));
+    this.m_controller.leftButton().onFalse(m_climber.setClimberPositionCommand(0));
   }
 
   public Command getAutonomousCommand() {
