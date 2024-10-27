@@ -8,6 +8,7 @@ import org.littletonrobotics.urcl.URCL;
 
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.hal.PowerDistributionVersion;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,50 +21,72 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import lib.BlueShift.control.Buzzer;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  // * Robot Container
   private RobotContainer m_robotContainer;
+  
+  // * Commands
+  private Command m_autonomousCommand;
+
+  // * PDP
   private static final PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
-  private static final Buzzer buzzer = new Buzzer(9);
+
+  // * Buzzer
+  private static final Buzzer buzzer = new Buzzer(0);
 
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+    // * Create robot controller
     m_robotContainer = new RobotContainer();
 
     // * DISABLE LIVE WINDOW
     LiveWindow.disableAllTelemetry();
 
     // * DISABLE PHOENIX LOGGING
-    SignalLogger.stop();
     SignalLogger.enableAutoLogging(false);
+    SignalLogger.stop();
 
-    // * Limelight port forwarding over USB
-    for (int port = 5800; port <= 5807; port++) PortForwarder.add(port, "limelight.local", port);
-
+    // * Cameras port forwarding over USB
+    for (int port = 5800; port <= 5807; port++) PortForwarder.add(port, Constants.Vision.Limelight3.kName + ".local", port);
+    for (int port = 5800; port <= 5807; port++) PortForwarder.add(port, Constants.Vision.Limelight3G.kName + ".local", port);
+    for (int port = 5800; port <= 5807; port++) PortForwarder.add(port, Constants.Vision.LimelightTwoPlus.kName + ".local", port);
+    for (int port = 5800; port <= 5807; port++) PortForwarder.add(port, "photonvision.local", port);
+  
     // * DataLogManager
     DataLogManager.start();
     DataLogManager.logNetworkTables(true);
-    DriverStation.startDataLog(DataLogManager.getLog());
+    DriverStation.startDataLog(DataLogManager.getLog(), true);
 
     // * Start REV Logging
     URCL.start();
 
     // * Verify PDP
-    pdp.getVersion();
+    boolean pdpValid = false;
+    PowerDistributionVersion pdpVersion = null;
+    try {
+      pdpVersion = pdp.getVersion();
+      pdpValid = true;
+    } catch (Exception e) {
+      pdpValid = false;
+    }
+
+    if (!pdpValid) {
+      System.out.print("ERROR: NO PDH FOUND AT CAN ID " + String.valueOf(pdp.getModule()));
+      buzzer.playTone(200, 0.075);
+      Timer.delay(0.05);
+      buzzer.playTone(200, 0.075);
+    } else {
+      if (pdpVersion != null) System.out.print("PDP Version: " + String.valueOf(pdpVersion.firmwareMajor) + "." + String.valueOf(pdpVersion.firmwareMinor));
+      buzzer.playTone(560, 0.075);
+      Timer.delay(0.05);
+      buzzer.playTone(560, 0.075);
+    }
 
     // * Beep
     buzzer.playTone(440, 0.1);
-    Timer.delay(0.05);
+    Timer.delay(0.1);
     buzzer.playTone(440, 0.1);
-    Timer.delay(0.05);
+    Timer.delay(0.1);
     buzzer.playTone(440, 0.1);
   }
 

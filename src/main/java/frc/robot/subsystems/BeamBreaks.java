@@ -7,21 +7,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-// TODO: Checar esta estructura, la neta no me gusto 💀
 public class BeamBreaks extends SubsystemBase {
-  private final HashMap<String, DigitalInput> m_beamBreaks = new HashMap<>();
-
+  /**
+   * Enum for the beam breaks on the robot.
+   */
   public enum BeamBreak {
-    INTAKE("Intake", Constants.BreamBreaks.kIntakeBeamBreakPort),
-    INDEXER_STAGE1("Indexer1", Constants.BreamBreaks.kIndexerStage1BeamBreakPort),
-    INDEXER_STAGE2("Indexer2", Constants.BreamBreaks.kIndexerStage2BeamBreakPort);
+    INTAKE("Intake", Constants.BreamBreaks.kIntakeBeamBreakPort, true),
+    INDEXER_STAGE1("Indexer1", Constants.BreamBreaks.kIndexerStage1BeamBreakPort, true),
+    INDEXER_STAGE2("Indexer2", Constants.BreamBreaks.kIndexerStage2BeamBreakPort, true);
 
     private final String name;
     private final int channel;
+    private final boolean inverted;
 
-    BeamBreak(String name, int channel) {
+    BeamBreak(String name, int channel, boolean inverted) {
       this.name = name;
       this.channel = channel;
+      this.inverted = inverted;
     }
 
     public String getName() {
@@ -31,22 +33,57 @@ public class BeamBreaks extends SubsystemBase {
     public int getChannel() {
       return this.channel;
     }
-  }
 
-  public BeamBreaks() {
-    for (BeamBreak beamBreak : BeamBreak.values()) {
-      m_beamBreaks.put(beamBreak.getName(), new DigitalInput(beamBreak.getChannel()));
+    public boolean isInverted() {
+      return this.inverted;
     }
   }
 
+  private final HashMap<String, DigitalInput> m_beamBreaks = new HashMap<>(BeamBreak.values().length);
+  private boolean enabled = true;
+
+  public BeamBreaks() {
+    for (BeamBreak beamBreak : BeamBreak.values()) m_beamBreaks.put(beamBreak.getName(), new DigitalInput(beamBreak.getChannel()));
+  }
+
+  /**
+   * Get the value of a beam break. If the beam break is inverted, the value will be negated.
+   * When disabled this will return false regardless of wether the beam break is inverted.
+   * @param beamBreak
+   * @return
+   */
   public boolean get(BeamBreak beamBreak) {
-    return m_beamBreaks.get(beamBreak.getName()).get();
+    if (!enabled) return false;
+    boolean value = m_beamBreaks.get(beamBreak.getName()).get();
+    return beamBreak.isInverted() ? !value : value;
+  }
+
+  /**
+   * Disable the beam breaks. When disabled, all beam breaks will return false.
+   */
+  public void disable() {
+    enabled = false;
+    SmartDashboard.putBoolean("BeamBreaks/Enabled", enabled);
+  }
+
+  /**
+   * Enable the beam breaks.
+   */
+  public void enable() {
+    enabled = true;
+    SmartDashboard.putBoolean("BeamBreaks/Enabled", enabled);
+  }
+
+  /**
+   * Check if the beam breaks are enabled.
+   * @return
+   */
+  public boolean isEnabled() {
+    return enabled;
   }
 
   @Override
   public void periodic() {
-    m_beamBreaks.forEach((name, beamBreak) -> {
-      SmartDashboard.putData("BeamBreaks/" + name, beamBreak);
-    });
+    for (BeamBreak beamBreak : BeamBreak.values()) SmartDashboard.putBoolean("BeamBreaks/" + beamBreak.getName(), get(beamBreak));
   }
 }

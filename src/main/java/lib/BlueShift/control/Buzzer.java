@@ -3,23 +3,23 @@ package lib.BlueShift.control;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.PWM;
 
 public class Buzzer {
-    private final DigitalOutput buzzer;
+    private final PWM buzzer;
     private Notifier toneNotifier;
     private boolean buzzerState;
     private double halfPeriod;
 
     public Buzzer(int channel) {
-        this.buzzer = new DigitalOutput(channel);
+        this.buzzer = new PWM(channel);
+        buzzer.enableDeadbandElimination(true);
     }
 
     public void playTone(double frequency) {
         halfPeriod = 1.0 / (2.0 * frequency);
         toneNotifier = new Notifier(() -> toggleBuzzer());
-
         toneNotifier.startPeriodic(halfPeriod);
     }
 
@@ -35,11 +35,11 @@ public class Buzzer {
 
     private void toggleBuzzer() {
         buzzerState = !buzzerState;
-        buzzer.set(buzzerState);
+        buzzer.setPosition(buzzerState ? 4096 : 0);
     }
 
     public void stopTone() {
         if (toneNotifier != null) toneNotifier.stop();
-        buzzer.set(false);
+        buzzer.setPosition(0);
     }
 }
