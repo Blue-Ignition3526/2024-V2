@@ -1,0 +1,15 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/CLIMBER_PID": "ProfiledPIDController",
+      "/SmartDashboard/HeadingController": "ProfiledPIDController",
+      "/SmartDashboard/ResetTurningEncoders": "Command",
+      "/SmartDashboard/SwerveDrive/Field": "Field2d",
+      "/SmartDashboard/ZeroHeading": "Command"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}

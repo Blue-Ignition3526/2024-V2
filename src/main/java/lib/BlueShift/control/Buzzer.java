@@ -39,7 +39,10 @@ public class Buzzer {
     }
 
     public void stopTone() {
-        if (toneNotifier != null) toneNotifier.stop();
+        if (toneNotifier != null) {
+            toneNotifier.stop();
+            toneNotifier.close();
+        }
         buzzer.setPosition(0);
     }
 }

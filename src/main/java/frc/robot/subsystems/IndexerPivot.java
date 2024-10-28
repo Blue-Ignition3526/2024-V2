@@ -33,7 +33,6 @@ public class IndexerPivot extends SubsystemBase {
 
   public IndexerPivot() {
     // Encoder
-    //TODO: Que el setpoint sea la posición en la que inicie
     this.indexerEncoder = new DutyCycleEncoder(Constants.Indexer.Pivot.kIndexerPivotEncoderPort);
     this.indexerEncoder.setPositionOffset(Constants.Indexer.Pivot.kIndexerPivotEncoderOffset.in(Rotation));
     

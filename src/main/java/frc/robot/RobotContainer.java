@@ -95,15 +95,19 @@ public class RobotContainer {
 
     this.m_controller.rightStickButton().onTrue(new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     
-    this.m_controller.bottomButton().toggleOnTrue(m_intake.setIn());
-    this.m_controller.rightButton().whileTrue(m_intake.setOut());
-    this.m_intake.setDefaultCommand(m_intake.setAvoid());
+    this.m_controller.bottomButton().toggleOnTrue(m_intake.setInCommand());
+    this.m_controller.rightButton().whileTrue(m_intake.setOutCommand());
+    this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
 
     this.m_controller.leftButton().onTrue(m_climber.setClimberPositionCommand(15));
     this.m_controller.leftButton().onFalse(m_climber.setClimberPositionCommand(0));
   }
 
   public Command getAutonomousCommand() {
+    return null;
+  }
+
+  public Command getTeleopCommand() {
     return null;
   }
 }
