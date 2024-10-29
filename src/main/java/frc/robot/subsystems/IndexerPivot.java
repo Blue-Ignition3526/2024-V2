@@ -7,6 +7,7 @@ import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.BlueShift.control.motor.LazyCANSparkMax;
@@ -113,6 +114,13 @@ public class IndexerPivot extends SubsystemBase {
   }
 
   // TODO: Commands
+  public Command resetPIDCommand() {
+    return runOnce(() -> Constants.Indexer.Pivot.kIndexerPivotPIDController.reset(getAngle().in(Degrees)));
+  }
+
+  public Command setSetpointCommand(Measure<Angle> setpoint) {
+    return run(() -> setSetpointAngle(setpoint)).until(() -> atSetpoint());
+  }
 
   @Override
   public void periodic() {

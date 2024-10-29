@@ -1,22 +1,27 @@
 package frc.robot;
 
-import frc.robot.Constants.Elevator;
+import frc.robot.commands.ClimberCommands;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.BeamBreaks;
-import frc.robot.subsystems.ClimberV0;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IndexerPivot;
-import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
+import frc.robot.subsystems.Elevator.ElevatorPosition;
 import frc.robot.subsystems.Gyro.Gyro;
 import frc.robot.subsystems.Gyro.GyroIOPigeon;
 import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.CustomController.CustomControllerType;
+
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 public class RobotContainer {
   // * Controller
@@ -34,20 +39,25 @@ public class RobotContainer {
   // * Swerve Drive
   private final SwerveDrive m_swerveDrive;
   
+  // * BeamBreaks
+  private final BeamBreaks m_beamBreaks;
+  
   // * Intake
   private final Intake m_intake;
 
+  // * Elevator
+  private final Elevator m_elevator;
+
   // * Shooter
-  // private final Shooter m_shooter;
+  private final Shooter m_shooter;
 
   // * Indexer Pivot
-  // private final IndexerPivot m_indexerPivot;
+  private final IndexerPivot m_indexerPivot;
 
-  // * BeamBreaks
-  private final BeamBreaks m_beamBreaks;
+  //* Climbers
+  private final Climber m_leftClimber;
+  private final Climber m_rightClimber;
 
-  //* Climber 
-  private final ClimberV0 m_climber;
   public RobotContainer() {
     // Gyro
     this.m_gyro = new Gyro(new GyroIOPigeon(Constants.SwerveDrive.kGyroDevice));
@@ -61,23 +71,46 @@ public class RobotContainer {
     // Swerve Drive
     this.m_swerveDrive = new SwerveDrive(m_frontLeft, m_frontRight, m_backLeft, m_backRight, m_gyro);
 
-    // Intake
-    this.m_intake = new Intake();
-
-    // Shooter
-    // this.m_shooter = new Shooter();
-
-    // Indexer Pivot
-    // this.m_indexerPivot = new IndexerPivot();
-
     // BeamBreaks
     this.m_beamBreaks = new BeamBreaks();
 
-    // Climber
-    this.m_climber = new ClimberV0();
+    // Intake
+    this.m_intake = new Intake();
 
-    SmartDashboard.putData("ZeroHeading", new InstantCommand(() -> m_swerveDrive.zeroHeading()));
-    SmartDashboard.putData("ResetTurningEncoders", new InstantCommand(() -> m_swerveDrive.resetTurningEncoders()));
+    // Elevator
+    this.m_elevator = new Elevator();
+
+    // Shooter
+    this.m_shooter = new Shooter();
+
+    // Indexer Pivot
+    this.m_indexerPivot = new IndexerPivot();
+
+    // Climbers
+    this.m_leftClimber = new Climber("LeftClimber", Constants.Climber.kLeftClimberMotorID);
+    this.m_rightClimber = new Climber("RightClimber", Constants.Climber.kRightClimberMotorID);
+
+    // Dashboard Commands
+    // Drivetrain
+    SmartDashboard.putData("Commands/Drivetrain/DrivetrainZeroHeading", new InstantCommand(m_swerveDrive::zeroHeading));
+    SmartDashboard.putData("Commands/Drivetrain/DrivetrainResetEncoders", new InstantCommand(m_swerveDrive::resetTurningEncoders));
+
+    // BeamBreaks
+    SmartDashboard.putData("Commands/Drivetrain/EnableBeamBreaks", new InstantCommand(m_beamBreaks::enable));
+    SmartDashboard.putData("Commands/Drivetrain/DisableBeamBreaks", new InstantCommand(m_beamBreaks::disable));
+
+    // Climbers
+    SmartDashboard.putData("Commands/Climbers/SetClimbersLow", ClimberCommands.setClimbersLowCommand(m_leftClimber, m_rightClimber));
+    SmartDashboard.putData("Commands/Climbers/SetClimbersHigh", ClimberCommands.setClimbersHighCommand(m_leftClimber, m_rightClimber));
+
+    // Elevator
+    SmartDashboard.putData("Commands/Elevator/SetElevatorLow", m_elevator.setPositionCommand(ElevatorPosition.LOW));
+    SmartDashboard.putData("Commands/Elevator/SetElevatorMid", m_elevator.setPositionCommand(ElevatorPosition.MEDIUM));
+    SmartDashboard.putData("Commands/Elevator/SetElevatorHigh", m_elevator.setPositionCommand(ElevatorPosition.HIGH));
+
+    // IndexerPivot
+    SmartDashboard.putNumber("Commands/IndexerPivot/IndexerSetpoint", 0);
+    SmartDashboard.putData("Commands/IndexerPivot/SetSetpoint", m_indexerPivot.setSetpointCommand(Degrees.of(SmartDashboard.getNumber("Commands/IndexerPivot/IndexerSetpoint", 0))));
 
     configureBindings();
   }
@@ -99,8 +132,8 @@ public class RobotContainer {
     this.m_controller.rightButton().whileTrue(m_intake.setOutCommand());
     this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
 
-    this.m_controller.leftButton().onTrue(m_climber.setClimberPositionCommand(15));
-    this.m_controller.leftButton().onFalse(m_climber.setClimberPositionCommand(0));
+    // this.m_controller.leftButton().onTrue(m_climber.setClimberPositionCommand(15));
+    // this.m_controller.leftButton().onFalse(m_climber.setClimberPositionCommand(0));
   }
 
   public Command getAutonomousCommand() {
@@ -108,7 +141,10 @@ public class RobotContainer {
   }
 
   public Command getTeleopCommand() {
-    return null;
+    return new ParallelCommandGroup(
+      m_elevator.resetPIDCommand(),
+      m_indexerPivot.resetPIDCommand()
+    );
   }
 }
 

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Elevator extends SubsystemBase {
-    enum ElevatorPosition {
+    public static enum ElevatorPosition {
         HIGH("High", Inches.of(8.0)),
         MEDIUM("Medium", Inches.of(5.0)),
         LOW("Low", Inches.of(0.0));
@@ -135,8 +135,12 @@ public class Elevator extends SubsystemBase {
      * @param position
      * @return
      */
-    public Command setSetpointPositionCommand(ElevatorPosition position) {
+    public Command setPositionCommand(ElevatorPosition position) {
         return run(() -> setSetpointPosition(position)).until(() -> atSetpoint());
+    }
+
+    public Command resetPIDCommand() {
+        return runOnce(() -> Constants.Elevator.kElevatorPIDController.reset(getPosition().in(Inches)));
     }
 
     @Override

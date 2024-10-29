@@ -285,9 +285,7 @@ public final class Constants {
         public static final double kclimberEncoder_RotationToInches = kclimberMotorGearRatio * (kSprocketDiameter.in(Inches)) * Math.PI;
         public static final double kclimberEncoder_RPMToInchesPerSecond = kclimberEncoder_RotationToInches / 60.0;
         
-
-        public static final int kLeftClimberMotorID = 33;
-        public static final int kRightClimberMotorID = 32;
+        public static final Measure<Distance> kClimberTolerance = Inches.of(0.5);
 
         // Climber speed
         public static final double kClimberUpSpeed = 0.9;
@@ -297,8 +295,8 @@ public final class Constants {
         public static final double kMaxCurrent = 20;
 
         //Climers ID
-        public static final int leftClimberMotorID = 30;
-        public static final int rightClimberMotorID = 31;
+        public static final int kLeftClimberMotorID = 30;
+        public static final int kRightClimberMotorID = 31;
 
         public static final Constraints kclimberConstraints = new Constraints(17, 10);
         public static final ProfiledPIDController kclimberPIDController = new ProfiledPIDController(4.2, 0.0, 0.0, kclimberConstraints);
