@@ -75,7 +75,10 @@ public class IndexerPivot extends SubsystemBase {
    */
   public Measure<Angle> getAngle() {
     // TODO: Add offset
-    return Rotation.of(indexerEncoder.getAbsolutePosition()).minus(Degrees.of(180));
+    return 
+      Rotation.of(indexerEncoder.getAbsolutePosition())
+      .times(Constants.Indexer.Pivot.kIndexerPivotEncoderRatio)
+      .minus(Degrees.of(180));
   }
 
   /**

@@ -1,70 +1,69 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import lib.BlueShift.control.motor.LazyCANSparkMax;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import static edu.wpi.first.units.Units.Inches;
 
 public class Climber extends SubsystemBase {
-    String name;
+  enum ClimberPosition {
+    HIGH(Inches.of(15)),
+    LOW(Inches.of(0));
 
-    private final LazyCANSparkMax rightClimberMotor;
-    private final LazyCANSparkMax leftClimberMotor;
-    private final RelativeEncoder climberEncoder;
-    private final ProfiledPIDController climberMotorPID;  
-    private double climberSetPoint;
+    private final Measure<Distance> position;
 
-    public Climber(){
-        this.leftClimberMotor = new LazyCANSparkMax(Constants.Climber.leftClimberMotorID, MotorType.kBrushless);
-        this.rightClimberMotor = new LazyCANSparkMax(Constants.Climber.rightClimberMotorID, MotorType.kBrushless);
-        this.rightClimberMotor.follow(this.leftClimberMotor, true);
-        this.climberEncoder = leftClimberMotor.getEncoder();
-        this.climberMotorPID = Constants.Climber.kclimberPIDController;
-        this.climberEncoder.setPositionConversionFactor(Constants.Climber.kclimberEncoder_RotationToInches); 
-        this.climberEncoder.setVelocityConversionFactor(Constants.Climber.kclimberEncoder_RPMToInchesPerSecond);
-        climberMotorPID.reset(getPosition());
-        // coast just for debugging
-        leftClimberMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        rightClimberMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-
-        SmartDashboard.putData("CLIMBER_PID", Constants.Climber.kclimberPIDController);
-
+    ClimberPosition(Measure<Distance> position) {
+      this.position = position;
     }
+
+    public Measure<Distance> getPosition() {
+      return position;
+    }
+  }
+
+  String name;
+
+  private final LazyCANSparkMax climberMotor;
+  private final RelativeEncoder climberEncoder;
+  private ClimberPosition climberSetPoint;
+  
+  public Climber(int motorId) {
+    // Motor
+    this.climberMotor = new LazyCANSparkMax(motorId, MotorType.kBrushless);
+    this.climberMotor.setIdleMode(IdleMode.kBrake);
+
+    // Encoder
+    this.climberEncoder = climberMotor.getEncoder();
+    this.climberEncoder.setPositionConversionFactor(Constants.Climber.kclimberEncoder_RotationToInches); 
+    this.climberEncoder.setVelocityConversionFactor(Constants.Climber.kclimberEncoder_RPMToInchesPerSecond);
+
+    // PID
+    Constants.Climber.kclimberPIDController.reset(climberEncoder.getPosition());
+  }
+
+  /**
+   * Get the climber's current position
+   * @return
+   */
+  public Measure<Distance> getPosition() {
+    return Inches.of(climberEncoder.getPosition());
+  }
+
+  /**
+   * Get the climber's setpoint
+   * @param setpoint
+   */
+  public Measure<Distance> getSetpoint() {
+    return climberSetPoint.getPosition();
+  }
+
+  @Override
+  public void periodic() {
     
-    //TODO: A base de posiciones
-
-
-    public void setPosition(double position) {
-        climberSetPoint = position;
-    }
-
-    public double getPosition() {
-        return climberEncoder.getPosition();
-    }
-
-    public void stop() {
-        leftClimberMotor.set(0);
-    }
-
-    public double getCurrent() {
-        return leftClimberMotor.getOutputCurrent();
-    }
-
-    public Command setClimberPositionCommand(double position) {
-        return run(() -> setPosition(position));
-    } 
-
-    @Override
-    public void periodic(){
-        double voltage = climberMotorPID.calculate(getPosition(),climberSetPoint);
-        leftClimberMotor.setVoltage(voltage);
-        SmartDashboard.putNumber("encoder", getPosition());
-        SmartDashboard.putNumber("voltage", voltage);
-        SmartDashboard.putNumber("percentageR", rightClimberMotor.getAppliedOutput());
-    }
+  }
 }

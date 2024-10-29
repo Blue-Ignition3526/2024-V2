@@ -3,7 +3,7 @@ package frc.robot;
 import frc.robot.Constants.Elevator;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.subsystems.BeamBreaks;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ClimberV0;
 import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
@@ -47,7 +47,7 @@ public class RobotContainer {
   private final BeamBreaks m_beamBreaks;
 
   //* Climber 
-  private final Climber m_climber;
+  private final ClimberV0 m_climber;
   public RobotContainer() {
     // Gyro
     this.m_gyro = new Gyro(new GyroIOPigeon(Constants.SwerveDrive.kGyroDevice));
@@ -74,7 +74,7 @@ public class RobotContainer {
     this.m_beamBreaks = new BeamBreaks();
 
     // Climber
-    this.m_climber = new Climber();
+    this.m_climber = new ClimberV0();
 
     SmartDashboard.putData("ZeroHeading", new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     SmartDashboard.putData("ResetTurningEncoders", new InstantCommand(() -> m_swerveDrive.resetTurningEncoders()));

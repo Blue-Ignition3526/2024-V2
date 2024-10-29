@@ -108,6 +108,7 @@ public final class Constants {
       public static final Measure<Angle> kIndexerPivotEncoderOffset = Degrees.of(0);
       // public static final Measure<Angle> kIndexerPivotMinAngle = Degrees.of(0);
       // public static final Measure<Angle> kIndexerPivotMaxAngle = Degrees.of(0);
+      public static final double kIndexerPivotEncoderRatio = 1.0 / 4.0;
   
       // * Motor
       // TODO: Set motor ID
