@@ -17,6 +17,21 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class IndexerPivot extends SubsystemBase {
+  public static enum IndexerPivotPosition {
+    REST(Degrees.of(0)),
+    RECEIVING(Degrees.of(5));
+
+    Measure<Angle> angle;
+
+    IndexerPivotPosition(Measure<Angle> angle) {
+      this.angle = angle;
+    }
+
+    public Measure<Angle> getAngle() {
+      return angle;
+    }
+  }
+
   // Encoder
   private final DutyCycleEncoder indexerEncoder;
 

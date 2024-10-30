@@ -6,6 +6,7 @@ import frc.robot.subsystems.BeamBreaks;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IndexerPivot;
+import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
@@ -17,6 +18,7 @@ import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.CustomController.CustomControllerType;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -54,6 +56,9 @@ public class RobotContainer {
   // * Indexer Pivot
   private final IndexerPivot m_indexerPivot;
 
+  // * Indexer Rollers
+  private final IndexerRollers m_indexerRollers;
+
   //* Climbers
   private final Climber m_leftClimber;
   private final Climber m_rightClimber;
@@ -86,6 +91,9 @@ public class RobotContainer {
     // Indexer Pivot
     this.m_indexerPivot = new IndexerPivot();
 
+    // Indexer Rollers
+    this.m_indexerRollers = new IndexerRollers(m_beamBreaks);
+
     // Climbers
     this.m_leftClimber = new Climber("LeftClimber", Constants.Climber.kLeftClimberMotorID);
     this.m_rightClimber = new Climber("RightClimber", Constants.Climber.kRightClimberMotorID);
@@ -112,6 +120,20 @@ public class RobotContainer {
     SmartDashboard.putNumber("Commands/IndexerPivot/IndexerSetpoint", 0);
     SmartDashboard.putData("Commands/IndexerPivot/SetSetpoint", m_indexerPivot.setSetpointCommand(Degrees.of(SmartDashboard.getNumber("Commands/IndexerPivot/IndexerSetpoint", 0))));
 
+    // IndexerRollers
+    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersIn", m_indexerRollers.setRollersInCommand());
+    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersOut", m_indexerRollers.setRollersOutCommand());
+    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersStop", m_indexerRollers.stopRollersCommand());
+
+    // Intake
+    SmartDashboard.putData("Commands/Intake/IntakeIn", m_intake.setInCommand());
+    SmartDashboard.putData("Commands/Intake/IntakeOut", m_intake.setOutCommand());
+    SmartDashboard.putData("Commands/Intake/IntakeAvoid", m_intake.setAvoidCommand());
+
+    // Shooter
+    SmartDashboard.putNumber("Commands/Shooter/ShooterSpeed", 140);
+    SmartDashboard.putData("Commands/Shooter/SetSetpoint", m_shooter.setRpmCommand(RPM.of(SmartDashboard.getNumber("Commands/Shooter/ShooterSpeed", 140))));
+
     configureBindings();
   }
 
@@ -131,9 +153,6 @@ public class RobotContainer {
     this.m_controller.bottomButton().toggleOnTrue(m_intake.setInCommand());
     this.m_controller.rightButton().whileTrue(m_intake.setOutCommand());
     this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
-
-    // this.m_controller.leftButton().onTrue(m_climber.setClimberPositionCommand(15));
-    // this.m_controller.leftButton().onFalse(m_climber.setClimberPositionCommand(0));
   }
 
   public Command getAutonomousCommand() {
