@@ -137,6 +137,10 @@ public class IndexerPivot extends SubsystemBase {
     return run(() -> setSetpointAngle(setpoint)).until(() -> atSetpoint());
   }
 
+  public Command setSetpointCommand(IndexerPivotPosition setpoint) {
+    return setSetpointCommand(setpoint.getAngle());
+  }
+
   @Override
   public void periodic() {
     // TODO: BE VERY CAREFUL AND TEST MANUALLY FIRST

@@ -14,6 +14,7 @@ import frc.robot.subsystems.SwerveModule;
 import frc.robot.subsystems.Elevator.ElevatorPosition;
 import frc.robot.subsystems.Gyro.Gyro;
 import frc.robot.subsystems.Gyro.GyroIOPigeon;
+import frc.robot.subsystems.IndexerPivot.IndexerPivotPosition;
 import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.CustomController.CustomControllerType;
 
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
   // * Controller
@@ -138,6 +140,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // * Drivetrain
     this.m_swerveDrive.setDefaultCommand(new DriveSwerve(
         m_swerveDrive,
         () -> -m_controller.getLeftY(),
@@ -150,7 +153,16 @@ public class RobotContainer {
 
     this.m_controller.rightStickButton().onTrue(new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     
-    this.m_controller.bottomButton().toggleOnTrue(m_intake.setInCommand());
+    // * Default control
+    this.m_controller.bottomButton().toggleOnTrue(new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        m_elevator.setPositionCommand(ElevatorPosition.LOW),
+        m_indexerPivot.setSetpointCommand(IndexerPivotPosition.RECEIVING)
+      ),
+      m_intake.setInCommand(),
+      m_indexerRollers.setRollersInCommand()
+    ));
+
     this.m_controller.rightButton().whileTrue(m_intake.setOutCommand());
     this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
   }
