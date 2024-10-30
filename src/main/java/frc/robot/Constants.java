@@ -144,9 +144,7 @@ public final class Constants {
   }
 
   public static final class BreamBreaks {
-    public static final int kIntakeBeamBreakPort = 1;
-    public static final int kIndexerStage1BeamBreakPort = 2;
-    public static final int kIndexerStage2BeamBreakPort = 3;
+    public static final int kIndexerStage2BeamBreakPort = 0;
   }
 
   public static final class Vision {

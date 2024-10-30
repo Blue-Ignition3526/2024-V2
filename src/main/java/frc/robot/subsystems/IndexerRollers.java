@@ -100,7 +100,7 @@ public class IndexerRollers extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("Indexer/BeamBreak1", beamBreaks.get(BeamBreak.INDEXER_STAGE1));
+        // SmartDashboard.putBoolean("Indexer/BeamBreak1", beamBreaks.get(BeamBreak.INDEXER_STAGE1));
         SmartDashboard.putBoolean("Indexer/BeamBreak2", beamBreaks.get(BeamBreak.INDEXER_STAGE2));
     }
 }

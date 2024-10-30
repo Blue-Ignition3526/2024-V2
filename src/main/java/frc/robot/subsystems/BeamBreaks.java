@@ -12,8 +12,6 @@ public class BeamBreaks extends SubsystemBase {
    * Enum for the beam breaks on the robot.
    */
   public static enum BeamBreak {
-    INTAKE("Intake", Constants.BreamBreaks.kIntakeBeamBreakPort, true),
-    INDEXER_STAGE1("Indexer1", Constants.BreamBreaks.kIndexerStage1BeamBreakPort, true),
     INDEXER_STAGE2("Indexer2", Constants.BreamBreaks.kIndexerStage2BeamBreakPort, true);
 
     private final String name;
