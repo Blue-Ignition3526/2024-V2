@@ -86,15 +86,11 @@ public class IndexerPivot extends SubsystemBase {
 
   /**
    * Get the angle reported by the Absolute through-bore encoder (in rotation)
-   * RANGE: -180 to 180 degrees
    * @return the angle of the indexer pivot
    */
   public Measure<Angle> getAngle() {
     // TODO: Add offset
-    return 
-      Rotation.of(indexerEncoder.getAbsolutePosition())
-      .times(Constants.Indexer.Pivot.kIndexerPivotEncoderRatio)
-      .minus(Degrees.of(180));
+    return Rotation.of(indexerEncoder.getAbsolutePosition()).times(Constants.Indexer.Pivot.kIndexerPivotEncoderRatio);
   }
 
   /**
