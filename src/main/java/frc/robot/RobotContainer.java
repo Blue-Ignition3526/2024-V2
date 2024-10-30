@@ -50,20 +50,20 @@ public class RobotContainer {
   private final Intake m_intake;
 
   // * Elevator
-  private final Elevator m_elevator;
+  // private final Elevator m_elevator;
 
   // * Shooter
-  private final Shooter m_shooter;
+  // private final Shooter m_shooter;
 
   // * Indexer Pivot
-  private final IndexerPivot m_indexerPivot;
+  // private final IndexerPivot m_indexerPivot;
 
   // * Indexer Rollers
-  private final IndexerRollers m_indexerRollers;
+  // private final IndexerRollers m_indexerRollers;
 
   //* Climbers
-  private final Climber m_leftClimber;
-  private final Climber m_rightClimber;
+  // private final Climber m_leftClimber;
+  // private final Climber m_rightClimber;
 
   public RobotContainer() {
     // Gyro
@@ -85,20 +85,20 @@ public class RobotContainer {
     this.m_intake = new Intake();
 
     // Elevator
-    this.m_elevator = new Elevator();
+    // this.m_elevator = new Elevator();
 
     // Shooter
-    this.m_shooter = new Shooter();
+    // this.m_shooter = new Shooter();
 
     // Indexer Pivot
-    this.m_indexerPivot = new IndexerPivot();
+    // this.m_indexerPivot = new IndexerPivot();
 
     // Indexer Rollers
-    this.m_indexerRollers = new IndexerRollers(m_beamBreaks);
+    // this.m_indexerRollers = new IndexerRollers(m_beamBreaks);
 
     // Climbers
-    this.m_leftClimber = new Climber("LeftClimber", Constants.Climber.kLeftClimberMotorID);
-    this.m_rightClimber = new Climber("RightClimber", Constants.Climber.kRightClimberMotorID);
+    // this.m_leftClimber = new Climber("LeftClimber", Constants.Climber.kLeftClimberMotorID);
+    // this.m_rightClimber = new Climber("RightClimber", Constants.Climber.kRightClimberMotorID);
 
     // Dashboard Commands
     // Drivetrain
@@ -110,22 +110,22 @@ public class RobotContainer {
     SmartDashboard.putData("Commands/Drivetrain/DisableBeamBreaks", new InstantCommand(m_beamBreaks::disable));
 
     // Climbers
-    SmartDashboard.putData("Commands/Climbers/SetClimbersLow", ClimberCommands.setClimbersLowCommand(m_leftClimber, m_rightClimber));
-    SmartDashboard.putData("Commands/Climbers/SetClimbersHigh", ClimberCommands.setClimbersHighCommand(m_leftClimber, m_rightClimber));
+    // SmartDashboard.putData("Commands/Climbers/SetClimbersLow", ClimberCommands.setClimbersLowCommand(m_leftClimber, m_rightClimber));
+    // SmartDashboard.putData("Commands/Climbers/SetClimbersHigh", ClimberCommands.setClimbersHighCommand(m_leftClimber, m_rightClimber));
 
     // Elevator
-    SmartDashboard.putData("Commands/Elevator/SetElevatorLow", m_elevator.setPositionCommand(ElevatorPosition.LOW));
-    SmartDashboard.putData("Commands/Elevator/SetElevatorMid", m_elevator.setPositionCommand(ElevatorPosition.MEDIUM));
-    SmartDashboard.putData("Commands/Elevator/SetElevatorHigh", m_elevator.setPositionCommand(ElevatorPosition.HIGH));
+    // SmartDashboard.putData("Commands/Elevator/SetElevatorLow", m_elevator.setPositionCommand(ElevatorPosition.LOW));
+    // SmartDashboard.putData("Commands/Elevator/SetElevatorMid", m_elevator.setPositionCommand(ElevatorPosition.MEDIUM));
+    // SmartDashboard.putData("Commands/Elevator/SetElevatorHigh", m_elevator.setPositionCommand(ElevatorPosition.HIGH));
 
     // IndexerPivot
-    SmartDashboard.putNumber("Commands/IndexerPivot/IndexerSetpoint", 0);
-    SmartDashboard.putData("Commands/IndexerPivot/SetSetpoint", m_indexerPivot.setSetpointCommand(Degrees.of(SmartDashboard.getNumber("Commands/IndexerPivot/IndexerSetpoint", 0))));
+    // SmartDashboard.putNumber("Commands/IndexerPivot/IndexerSetpoint", 0);
+    // SmartDashboard.putData("Commands/IndexerPivot/SetSetpoint", m_indexerPivot.setSetpointCommand(Degrees.of(SmartDashboard.getNumber("Commands/IndexerPivot/IndexerSetpoint", 0))));
 
     // IndexerRollers
-    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersIn", m_indexerRollers.setRollersInCommand());
-    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersOut", m_indexerRollers.setRollersOutCommand());
-    SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersStop", m_indexerRollers.stopRollersCommand());
+    // SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersIn", m_indexerRollers.setRollersInCommand());
+    // SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersOut", m_indexerRollers.setRollersOutCommand());
+    // SmartDashboard.putData("Commands/IndexerRollers/IndexerRollersStop", m_indexerRollers.stopRollersCommand());
 
     // Intake
     SmartDashboard.putData("Commands/Intake/IntakeIn", m_intake.setInCommand());
@@ -133,8 +133,8 @@ public class RobotContainer {
     SmartDashboard.putData("Commands/Intake/IntakeAvoid", m_intake.setAvoidCommand());
 
     // Shooter
-    SmartDashboard.putNumber("Commands/Shooter/ShooterSpeed", 140);
-    SmartDashboard.putData("Commands/Shooter/SetSetpoint", m_shooter.setRpmCommand(RPM.of(SmartDashboard.getNumber("Commands/Shooter/ShooterSpeed", 140))));
+    // SmartDashboard.putNumber("Commands/Shooter/ShooterSpeed", 140);
+    // SmartDashboard.putData("Commands/Shooter/SetSetpoint", m_shooter.setRpmCommand(RPM.of(SmartDashboard.getNumber("Commands/Shooter/ShooterSpeed", 140))));
 
     configureBindings();
   }
@@ -154,14 +154,15 @@ public class RobotContainer {
     this.m_controller.rightStickButton().onTrue(new InstantCommand(() -> m_swerveDrive.zeroHeading()));
     
     // * Default control
-    this.m_controller.bottomButton().toggleOnTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_elevator.setPositionCommand(ElevatorPosition.LOW),
-        m_indexerPivot.setSetpointCommand(IndexerPivotPosition.RECEIVING)
-      ),
-      m_intake.setInCommand(),
-      m_indexerRollers.setRollersInCommand()
-    ));
+    // this.m_controller.bottomButton().toggleOnTrue(new SequentialCommandGroup(
+    //   new ParallelCommandGroup(
+    //     m_elevator.setPositionCommand(ElevatorPosition.LOW),
+    //     m_indexerPivot.setSetpointCommand(IndexerPivotPosition.RECEIVING)
+    //   ),
+    //   m_intake.setInCommand(),
+    //   m_indexerRollers.setRollersInCommand()
+    // ));
+    this.m_controller.bottomButton().toggleOnTrue(m_intake.setInCommand());
 
     this.m_controller.rightButton().whileTrue(m_intake.setOutCommand());
     this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
@@ -173,8 +174,8 @@ public class RobotContainer {
 
   public Command getTeleopCommand() {
     return new ParallelCommandGroup(
-      m_elevator.resetPIDCommand(),
-      m_indexerPivot.resetPIDCommand()
+      // m_elevator.resetPIDCommand(),
+      // m_indexerPivot.resetPIDCommand()
     );
   }
 }
