@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.UpperCamelCaseStrategy;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -27,6 +29,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import lib.BlueShift.constants.CTRECANDevice;
 import lib.BlueShift.constants.PIDFConstants;
 import lib.BlueShift.constants.SwerveModuleOptions;
@@ -183,6 +187,12 @@ public final class Constants {
     public static final Pose2d kInitialPoseMeters = new Pose2d(new Translation2d(1, 2), new Rotation2d(0, 0));
     public static final Pose3d kBlueSpeakerPoseMeters = new Pose3d(new Translation3d(0, 5.55, 2), new Rotation3d(0, 0, 0));
     public static final Pose3d kRedSpeakerPoseMeters = new Pose3d(new Translation3d(17, 5.55, 2), new Rotation3d(0, 0, 0));
+
+    public static Pose3d getCurrentSpeaker() {
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+      if (alliance.isEmpty()) return kBlueSpeakerPoseMeters;
+      return alliance.get() == Alliance.Blue ? kBlueSpeakerPoseMeters : kRedSpeakerPoseMeters;
+    }
   }
 
   public static final class SwerveDrive {

@@ -116,6 +116,14 @@ public class Elevator extends SubsystemBase {
     }
 
     /**
+     * Get the setpoint position for the elevator
+     * @return
+     */
+    public ElevatorPosition getSetpoint() {
+        return this.m_setpoint;
+    }
+
+    /**
      * Check if the elevator is at the setpoint
      * @return
      */
