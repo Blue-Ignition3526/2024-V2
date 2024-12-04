@@ -7,6 +7,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IndexerPivot;
 import frc.robot.subsystems.IndexerRollers;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Odometry;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveModule;
@@ -15,6 +16,12 @@ import frc.robot.subsystems.Gyro.GyroIOPigeon;
 import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.SpeedAlterator;
 import lib.BlueShift.control.CustomController.CustomControllerType;
+import lib.BlueShift.odometry.vision.VisionOdometryPoseEstimate;
+import lib.BlueShift.odometry.vision.camera.LimelightOdometryCamera;
+import lib.BlueShift.odometry.vision.camera.VisionOdometryFilters;
+
+import java.util.Optional;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -56,8 +63,9 @@ public class RobotContainer {
   private final IndexerRollers m_indexerRollers;
 
   // * Odometry
-  SwerveDrivePoseEstimator m_poseEstimator;
-  Field2d m_field = new Field2d();
+  LimelightOdometryCamera limelight3G;
+  LimelightOdometryCamera limelight3;
+  Odometry m_odometry;
 
   public RobotContainer() {
     // Gyro
@@ -90,15 +98,30 @@ public class RobotContainer {
     // Vision
     LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3G.kName, Constants.Vision.Limelight3G.kOdometryPipeline);
     LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3.kName, Constants.Vision.Limelight3.kOdometryPipeline);
-    m_poseEstimator = new SwerveDrivePoseEstimator(
+
+    this.limelight3G = new LimelightOdometryCamera(Constants.Vision.Limelight3G.kName, false, VisionOdometryFilters::limelightFilter);
+    this.limelight3 = new LimelightOdometryCamera(Constants.Vision.Limelight3.kName, false, VisionOdometryFilters::limelightFilter);
+
+    this.m_odometry = new Odometry(
       Constants.SwerveDrive.PhysicalModel.kDriveKinematics,
-      m_swerveDrive.getHeading(),
-      m_swerveDrive.getModulePositions(),
-      new Pose2d()
+      m_swerveDrive::getHeading,
+      m_swerveDrive::getModulePositions,
+      new Pose2d(),
+      0.02,
+      true
     );
 
+    this.m_odometry.addCamera(limelight3G);
+    this.m_odometry.addCamera(limelight3);
+
+    this.limelight3G.enable();
+    this.limelight3.enable();
+
+    this.m_odometry.setVisionEnabled(true);
+    this.m_odometry.startVisionLoop();
+
     // Speed Alterators
-    this.alignToSpeakerAlterator = new AlignToSpeaker(m_poseEstimator::getEstimatedPosition);
+    this.alignToSpeakerAlterator = new AlignToSpeaker(m_odometry::getPose);
 
     // Dashboard Commands
     // Drivetrain
@@ -117,6 +140,8 @@ public class RobotContainer {
     SmartDashboard.putData("Commands/Intake/IntakeIn", m_intake.setInCommand());
     SmartDashboard.putData("Commands/Intake/IntakeOut", m_intake.setOutCommand());
     SmartDashboard.putData("Commands/Intake/IntakeAvoid", m_intake.setAvoidCommand());
+    
+    SmartDashboard.putData("Commands/Odometry/SetVisionPose", new InstantCommand(this::setVisionPose));
 
     configureBindings();
   }
@@ -200,15 +225,24 @@ public class RobotContainer {
     );
   }
 
-  public void autonomousInit() {}
+  public void setVisionPose() {
+    Optional<VisionOdometryPoseEstimate> poseEstimate = limelight3G.getEstimate();
+    if (poseEstimate.isPresent() && limelight3G.isEnabled()) m_odometry.resetPose(poseEstimate.get().pose);
+  }
+
+  public void autonomousInit() {
+    setVisionPose();
+  }
   public void autonomousPeriodic() {}
 
-  public void teleopInit() {}
+  public void teleopInit() {
+    setVisionPose();
+  }
   public void teleopPeriodic() {}
 
   public void init() {}
   public void periodic() {
-    // Update limelights gyroscope values
+    // Update limelights' gyroscope values
     LimelightHelpers.SetRobotOrientation(Constants.Vision.Limelight3G.kName, m_gyro.getHeading().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation(Constants.Vision.Limelight3.kName, m_gyro.getHeading().getDegrees(), 0, 0, 0, 0, 0);
   }
