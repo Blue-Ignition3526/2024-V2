@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RobotContainer {
   // * Controller
@@ -91,13 +89,15 @@ public class RobotContainer {
 
     // Vision
     LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3G.kName, Constants.Vision.Limelight3G.kOdometryPipeline);
-    LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3.kName, Constants.Vision.Limelight3.kNotePipeline);
+    LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3.kName, Constants.Vision.Limelight3.kOdometryPipeline);
     m_poseEstimator = new SwerveDrivePoseEstimator(
       Constants.SwerveDrive.PhysicalModel.kDriveKinematics,
       m_swerveDrive.getHeading(),
       m_swerveDrive.getModulePositions(),
       new Pose2d()
     );
+
+    // Speed Alterators
     this.alignToSpeakerAlterator = new AlignToSpeaker(m_poseEstimator::getEstimatedPosition);
 
     // Dashboard Commands
@@ -190,23 +190,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.shoot),
-        m_shooter.setVelocityCommand(0.8, 0.9)
-        ),
-
-        new WaitCommand(2),
-
-        m_indexerRollers.setRollersPassCommand(),
-
-        new WaitCommand(1),
-
-        new ParallelCommandGroup(
-          m_shooter.setIdleCommand(),
-          m_indexerRollers.stopRollersCommand()
-        )
-    );
+    return null;
   }
 
   public Command getTeleopCommand() {
@@ -216,11 +200,17 @@ public class RobotContainer {
     );
   }
 
+  public void autonomousInit() {}
+  public void autonomousPeriodic() {}
+
+  public void teleopInit() {}
+  public void teleopPeriodic() {}
+
+  public void init() {}
   public void periodic() {
-    // Update limelights gyroscope
+    // Update limelights gyroscope values
     LimelightHelpers.SetRobotOrientation(Constants.Vision.Limelight3G.kName, m_gyro.getHeading().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation(Constants.Vision.Limelight3.kName, m_gyro.getHeading().getDegrees(), 0, 0, 0, 0, 0);
-
   }
 }
 

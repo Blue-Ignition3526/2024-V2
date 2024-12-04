@@ -14,13 +14,11 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import lib.Elastic;
-import lib.BlueShift.control.Buzzer;
 import lib.Elastic.ElasticNotification;
 import lib.Elastic.ElasticNotification.NotificationLevel;
 
@@ -36,7 +34,7 @@ public class Robot extends TimedRobot {
   private static final PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev);
 
   // * Buzzer
-  private static final Buzzer buzzer = new Buzzer(0);
+  // private static final Buzzer buzzer = new Buzzer(0);
 
   @Override
   public void robotInit() {
@@ -86,22 +84,25 @@ public class Robot extends TimedRobot {
     if (!pdpValid) {
       System.out.print("ERROR: NO PDH FOUND AT CAN ID " + String.valueOf(pdp.getModule()));
       issues = true;
-      buzzer.playTone(200, 0.075);
-      Timer.delay(0.05);
-      buzzer.playTone(200, 0.075);
+      // buzzer.playTone(200, 0.075);
+      // Timer.delay(0.05);
+      // buzzer.playTone(200, 0.075);
     } else {
       if (pdpVersion != null) System.out.print("PDP Version: " + String.valueOf(pdpVersion.firmwareMajor) + "." + String.valueOf(pdpVersion.firmwareMinor));
-      buzzer.playTone(560, 0.075);
-      Timer.delay(0.05);
-      buzzer.playTone(560, 0.075);
+      // buzzer.playTone(560, 0.075);
+      // Timer.delay(0.05);
+      // buzzer.playTone(560, 0.075);
     }
 
     // * Beep
-    buzzer.playTone(440, 0.1);
-    Timer.delay(0.1);
-    buzzer.playTone(440, 0.1);
-    Timer.delay(0.1);
-    buzzer.playTone(440, 0.1);
+    // buzzer.playTone(440, 0.1);
+    // Timer.delay(0.1);
+    // buzzer.playTone(440, 0.1);
+    // Timer.delay(0.1);
+    // buzzer.playTone(440, 0.1);
+
+    // * Run robot container init
+    m_robotContainer.init();
 
     // * Show that the robot is ready
     Elastic.sendAlert(new ElasticNotification(NotificationLevel.INFO, "Robot ready!", !issues ? "No issues detected. Robot is ready to be enabled." : "Some issues were detected, please check immediately."));
@@ -124,24 +125,30 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Elastic.sendAlert(new ElasticNotification(NotificationLevel.WARNING, "Robot Enabled Autonomous.", "Robot has been enabled in autonomous mode, BE CAUTIOUS."));
+    m_robotContainer.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (m_autonomousCommand != null) m_autonomousCommand.schedule();
     if (m_teleopCommand != null) m_teleopCommand.cancel();
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.autonomousPeriodic();
+  }
 
   @Override
   public void teleopInit() {
     Elastic.sendAlert(new ElasticNotification(NotificationLevel.WARNING, "Robot Enabled Teleop.", "Robot has been enabled in Teleop mode, BE CAUTIOUS."));
+    m_robotContainer.teleopInit();
     m_teleopCommand = m_robotContainer.getTeleopCommand();
     if (m_teleopCommand != null) m_teleopCommand.schedule();
     if (m_autonomousCommand != null) m_autonomousCommand.cancel();
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.teleopPeriodic();
+  }
 
   @Override
   public void testInit() {
