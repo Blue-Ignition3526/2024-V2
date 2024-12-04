@@ -1,5 +1,6 @@
 package frc.robot;
 
+import frc.robot.commands.CompoundCommands;
 import frc.robot.commands.SwerveDrive.DriveSwerve;
 import frc.robot.speedAlterators.AlignToSpeaker;
 import frc.robot.subsystems.Elevator;
@@ -14,7 +15,6 @@ import frc.robot.subsystems.Gyro.GyroIOPigeon;
 import lib.BlueShift.control.CustomController;
 import lib.BlueShift.control.SpeedAlterator;
 import lib.BlueShift.control.CustomController.CustomControllerType;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -40,8 +40,7 @@ public class RobotContainer {
   
   // * Swerve Drive
   private final SwerveDrive m_swerveDrive;
-  private final SpeedAlterator alignToSpeakerAlterator;  
-  // * BeamBreaks
+  private final SpeedAlterator alignToSpeakerAlterator;
   
   // * Intake
   private final Intake m_intake;
@@ -57,10 +56,6 @@ public class RobotContainer {
 
   // * Indexer Rollers
   private final IndexerRollers m_indexerRollers;
-
-  //* Climbers
-  // private final Climber m_leftClimber;
-  // private final Climber m_rightClimber;
 
   // * Odometry
   SwerveDrivePoseEstimator m_poseEstimator;
@@ -79,8 +74,6 @@ public class RobotContainer {
     // Swerve Drive
     this.m_swerveDrive = new SwerveDrive(m_frontLeft, m_frontRight, m_backLeft, m_backRight, m_gyro);
 
-    // BeamBreaks
-
     // Intake
     this.m_intake = new Intake();
 
@@ -95,10 +88,6 @@ public class RobotContainer {
 
     // Indexer Rollers
     this.m_indexerRollers = new IndexerRollers();
-
-    // Climbers
-    // this.m_leftClimber = new Climber("LeftClimber", Constants.Climber.kLeftClimberMotorID);
-    // this.m_rightClimber = new Climber("RightClimber", Constants.Climber.kRightClimberMotorID);
 
     // Vision
     LimelightHelpers.setPipelineIndex(Constants.Vision.Limelight3G.kName, Constants.Vision.Limelight3G.kOdometryPipeline);
@@ -116,14 +105,6 @@ public class RobotContainer {
     SmartDashboard.putData("Commands/Drivetrain/DrivetrainZeroHeading", new InstantCommand(m_swerveDrive::zeroHeading));
     SmartDashboard.putData("Commands/Drivetrain/DrivetrainResetEncoders", new InstantCommand(m_swerveDrive::resetTurningEncoders));
 
-    // BeamBreaks
-
-    // Climbers
-    // SmartDashboard.putData("Commands/Climbers/SetClimbersLow", ClimberCommands.setClimbersLowCommand(m_leftClimber, m_rightClimber));
-    // SmartDashboard.putData("Commands/Climbers/SetClimbersHigh", ClimberCommands.setClimbersHighCommand(m_leftClimber, m_rightClimber));
-
-    // Elevator
-
     // IndexerPivot
     SmartDashboard.putNumber("Commands/IndexerPivot/IndexerSetpoint", 0);
 
@@ -136,10 +117,6 @@ public class RobotContainer {
     SmartDashboard.putData("Commands/Intake/IntakeIn", m_intake.setInCommand());
     SmartDashboard.putData("Commands/Intake/IntakeOut", m_intake.setOutCommand());
     SmartDashboard.putData("Commands/Intake/IntakeAvoid", m_intake.setAvoidCommand());
-
-    // Shooter
-    // SmartDashboard.putNumber("Commands/Shooter/ShooterSpeed", 140);
-    // SmartDashboard.putData("Commands/Shooter/SetSetpoint", m_shooter.setRpmCommand(RPM.of(SmartDashboard.getNumber("Commands/Shooter/ShooterSpeed", 140))));
 
     configureBindings();
   }
@@ -161,176 +138,55 @@ public class RobotContainer {
     this.m_controller.rightBumper().onTrue(m_swerveDrive.enableSpeedAlteratorCommand(alignToSpeakerAlterator));
     this.m_controller.rightBumper().onFalse(m_swerveDrive.disableSpeedAlteratorCommand());
     
-    // * Default control
-    this.m_controller.bottomButton().toggleOnTrue(new SequentialCommandGroup(
-         m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.recieving),
-         m_shooter.setIdleCommand(),
-         m_elevator.setPositionCommand(0),
-        // Set elevator
-        new ParallelCommandGroup(
-          m_intake.setInCommand(),
-          m_indexerRollers.setRollersInCommand()
-        ).until(() -> m_indexerRollers.getBeamBreak()),
-        //new WaitCommand(0.25),
-        new ParallelCommandGroup(
-          m_intake.setStopCommand(),
-          m_indexerRollers.stopRollersCommand()
-        )
-      
-    )).onFalse(
-      new ParallelCommandGroup(
-            m_intake.setStopCommand(),
-            m_indexerRollers.stopRollersCommand()
-          )
-    );
+    // * Intake command
+    this.m_controller.bottomButton().toggleOnTrue(CompoundCommands.intakeCommand(
+      m_indexerPivot,
+      m_elevator,
+      m_shooter,
+      m_intake,
+      m_indexerRollers,
+      m_indexerRollers::getBeamBreak
+    ));
 
-    // !DISABLE BEAM BREAK MOMENTARILY COMMAND
-    this.m_controller.leftBumper().whileTrue(m_indexerRollers.setBeamBreakEnabledCommand(false))
+    // * DISABLE BEAM BREAK MOMENTARILY COMMAND
+    this.m_controller.leftBumper()
+    .onTrue(m_indexerRollers.setBeamBreakEnabledCommand(false))
     .onFalse(m_indexerRollers.setBeamBreakEnabledCommand(true));
 
-    this.m_controller.topButton().whileTrue(new SequentialCommandGroup(
-         m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.recieving),
-        // Set elevator
-        new ParallelCommandGroup(
-          m_intake.setOutCommand(),
-          m_indexerRollers.setRollersOutCommand()
-        )
-    )).onFalse(
-      new ParallelCommandGroup(
-            m_intake.setStopCommand(),
-            m_indexerRollers.stopRollersCommand()
-          )
-    );
-
-    this.m_controller.rightTrigger().whileTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.shoot),
-        m_shooter.setShootCommand()
-        )
-    )).onFalse(new SequentialCommandGroup(
-      m_indexerRollers.setRollersPassCommand(),
-
-        new WaitCommand(1.2),
-
-        new ParallelCommandGroup(
-          m_shooter.setIdleCommand(),
-          m_indexerRollers.stopRollersCommand()
-        )
+    // * Outtake command
+    this.m_controller.topButton().whileTrue(CompoundCommands.outtakeCommand(
+      m_indexerPivot,
+      m_elevator,
+      m_shooter,
+      m_intake,
+      m_indexerRollers
     ));
 
-    /* this.m_controller.rightTrigger().whileTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.shoot),
-        m_shooter.setVelocityCommand(0.9, 0.3)
-        )
-    )).onFalse(new SequentialCommandGroup(
-      m_indexerRollers.setRollersPassCommand(),
-
-        new WaitCommand(1.2),
-
-        new ParallelCommandGroup(
-          m_shooter.stopCommand(),
-          m_indexerRollers.stopRollersCommand()
-        )
-    )); */
-
-    this.m_controller.leftTrigger().whileTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.horizontal),
-        m_shooter.setPassCommand()
-        )
-    )).onFalse(new SequentialCommandGroup(
-      m_indexerRollers.setRollersPassCommand(),
-
-        new WaitCommand(1.2),
-
-        new ParallelCommandGroup(
-          m_shooter.setIdleCommand(),
-          m_indexerRollers.stopRollersCommand()
-        )
+    // * High shoot command
+    this.m_controller.rightTrigger().whileTrue(CompoundCommands.highShootCommand(
+      m_indexerPivot,
+      m_indexerRollers,
+      m_shooter
     ));
-    
-    /* m_controller.povLeft().onTrue(new SequentialCommandGroup(
-      m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.recieving),
-      m_elevator.setPositionCommand(5)
-    )); */
 
-    /* this.m_controller.rightBumper().whileTrue(new SequentialCommandGroup(
-      m_elevator.setPositionCommand(0) // ! SET TO TOP
-      .until(() -> m_elevator.atSetpoint()),
-      m_indexerRollers.setRollersOutCommand()
-    )).onFalse(
-      new ParallelCommandGroup(
-        m_elevator.setPositionCommand(0),
-        m_indexerRollers.stopRollersCommand()
-      )
-    );
+    // * Low shoot command
+    this.m_controller.leftTrigger().whileTrue(CompoundCommands.lowShootCommand(
+      m_indexerPivot,
+      m_indexerRollers,
+      m_shooter
+    ));
 
-    //! BUMOPER BOUND TO SOM3ETHING ELSE
-    this.m_controller.leftBumper().whileTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.recieving),
-        m_shooter.setVelocityCommand(0.9),
-        m_elevator.setPositionCommand(0) // ! SET TO TOP
-        )
-    )).onFalse(new SequentialCommandGroup(
-      m_indexerRollers.setRollersPassCommand(),
-
-        new WaitCommand(1.2),
-
-        new ParallelCommandGroup(
-          m_shooter.stopCommand(),
-          m_indexerRollers.stopRollersCommand(),
-          m_elevator.setPositionCommand(0)
-        )
-    )); */
-
+    // * Elevator high position command
     this.m_controller.povUp().onTrue(m_elevator.setPositionCommand(55));
+
+    // * Elevator low position command
     this.m_controller.povDown().onTrue(m_elevator.setPositionCommand(0));
 
-    this.m_controller.povRight().whileTrue(new SequentialCommandGroup(
-      m_elevator.setPositionCommand(55).until(m_elevator::atSetpoint),
-      m_indexerPivot.setSetpointCommand(0).until(m_indexerPivot::atSetpoint)
-    )).onFalse(m_elevator.setPositionCommand(0));
+    // * Amp command
+    this.m_controller.povRight().whileTrue(CompoundCommands.ampCommand(m_indexerPivot, m_indexerRollers, m_elevator));
 
-    this.m_controller.leftButton().whileTrue(m_indexerRollers.setRollersOutCommand())
-    .onFalse(m_indexerRollers.stopRollersCommand());
-
-    /* this.m_controller.topButton().onTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        m_elevator.setPositionCommand(ElevatorPosition.LOW),
-        m_indexerPivot.setSetpointCommand(Constants.Indexer.Pivot.recieving)
-      ),
-      m_intake.setOutCommand(),
-      m_indexerRollers.setRollersOutCommand(),
-      new WaitCommand(0.25),
-      m_indexerRollers.stopRollersCommand()
-    )); */
-
-    /* this.m_controller.leftTrigger().whileTrue(new ParallelCommandGroup(
-      m_elevator.setPositionCommand(ElevatorPosition.LOW),
-      m_indexerPivot.setSetpointCommand(
-        
-          Constants.Shooter.kIndexerAngle.getInterpolatedValue(
-            Constants.Field.getCurrentSpeaker().toPose2d().minus(m_poseEstimator.getEstimatedPosition()).getTranslation().getNorm()
-          )
-
-      ),
-      m_shooter.setRpmCommand(RPM.of(
-        Constants.Shooter.kShooterSpeed.getInterpolatedValue(
-            Constants.Field.getCurrentSpeaker().toPose2d().minus(m_poseEstimator.getEstimatedPosition()).getTranslation().getNorm()
-          )
-        )
-      )
-    )); */
-
-    // this.m_controller.rightTrigger().whileTrue(m_indexerRollers.setRollersPassCommand());
-    
-    // this.m_controller.bottomButton().toggleOnTrue(m_intake.setInCommand());
-
-    // * Intake
-    //this.m_intake.setDefaultCommand(m_intake.setAvoidCommand());
-
+    // * Indexer out command
+    this.m_controller.leftButton().onTrue(m_indexerRollers.setRollersOutCommand()).onFalse(m_indexerRollers.stopRollersCommand());
   }
 
   public Command getAutonomousCommand() {

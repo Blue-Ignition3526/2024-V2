@@ -83,9 +83,9 @@ public class SwerveModule extends SubsystemBase {
         resetEncoders();
         
 
-        //Reset turn encoider after a second
+        // Reset turn encoder after some time to give the absolute encoder time to initialize
         new Thread(() -> {
-            try { Thread.sleep(1000); } catch (Exception e) {};
+            try { Thread.sleep(2000); } catch (Exception e) {};
             resetTurningEncoder();    
         }).start();
     }

@@ -10,9 +10,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 
 import java.util.Optional;
-
-import com.fasterxml.jackson.databind.PropertyNamingStrategies.UpperCamelCaseStrategy;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -23,7 +20,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -115,7 +111,7 @@ public final class Constants {
       public static final double kIndexerPivotEncoderRatio = 0.25;
   
       // * Base positions
-      public static final double recieving = 0.08; // ! NOT 0
+      public static final double receiving = 0.08; // ! NOT 0
       public static final double shoot = 0.08; // ! NOT 0
       public static final double horizontal = 0.01; // ! NOT 0
       public static final double stow = -0.05; // ! NOT 0
